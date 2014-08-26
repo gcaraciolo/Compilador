@@ -1,3 +1,4 @@
+/* reserved words */
 #define MAIN 0
 #define IF 1
 #define ELSE 2
@@ -7,3 +8,11 @@
 #define INT 6
 #define FLOAT 7
 #define CHAR 8
+
+/* oprelacional */
+#define MENOR 9
+#define MAIOR 10
+#define MENOR_IGUAL 11
+#define MAIOR_IGUAL 12
+#define IGUAL_COMPARACAO 13
+#define DIFERENTE_COMPARACAO 14
