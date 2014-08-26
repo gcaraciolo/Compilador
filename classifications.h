@@ -23,3 +23,11 @@
 #define MULTIPLICACAO 17
 #define DIVISAO 18
 #define IGUAL_ATRIBUICAO 19
+
+/* special characters */
+#define ABRE_PARENTESES 20
+#define FECHA_PARENTESES 21
+#define ABRE_CHAVES 22
+#define FECHA_CHAVES 23
+#define VIRGULA 24
+#define PONTO_VIRGULA 25
