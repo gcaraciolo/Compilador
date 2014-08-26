@@ -16,3 +16,10 @@
 #define MAIOR_IGUAL 12
 #define IGUAL_COMPARACAO 13
 #define DIFERENTE_COMPARACAO 14
+
+/* oparitimetico */
+#define SOMA 15
+#define SUBTRACAO 16
+#define MULTIPLICACAO 17
+#define DIVISAO 18
+#define IGUAL_ATRIBUICAO 19
