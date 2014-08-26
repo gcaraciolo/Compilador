@@ -31,3 +31,21 @@
 #define FECHA_CHAVES 23
 #define VIRGULA 24
 #define PONTO_VIRGULA 25
+
+/* letra */
+#define LETRA 26
+
+/* digito */
+#define DIGITO 27
+
+/* inteiro */
+#define INTEIRO 28
+
+/* float */
+#define FLOAT 29
+
+/* char */
+#define CHAR 30
+
+/* identificador */
+#define ID 31
