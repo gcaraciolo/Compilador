@@ -7,3 +7,4 @@ compiler: symbols
 symbols: compiler.c
 	gcc compiler.c symbols.h
 
+

@@ -6,4 +6,5 @@
 int _SCAN(FILE *file){
 
 	return TOKEN;
+	
 }
