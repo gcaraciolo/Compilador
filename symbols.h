@@ -1,3 +1,10 @@
+#ifndef SYMBOLS_H_
+#define SYMBOLS_H_
+
+typedef enum{
+	false, true
+}boolean;
+
 /* reserved words */
 #define MAIN 0
 #define IF 1
@@ -38,14 +45,11 @@
 /* digito */
 #define DIGITO 27
 
-/* inteiro */
-#define INTEIRO 28
-
-/* float */
-#define FLOAT 29
-
-/* char */
-#define CHAR 30
-
 /* identificador */
-#define ID 31
+#define ID 28
+
+/* errors*/
+#define ERROR_PARAMETERS_NOT_PASSED 29
+#define ERROR_FILE_NOT_RECOGNIZED 30
+
+#endif
