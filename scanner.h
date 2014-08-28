@@ -2,6 +2,7 @@
 #define SCANNER_H_
 
 
-
+int _SCAN();
+void readFile();
 
 #endif

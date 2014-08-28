@@ -1,10 +1,6 @@
 #ifndef SYMBOLS_H_
 #define SYMBOLS_H_
 
-typedef enum{
-	false, true
-}boolean;
-
 /* reserved words */
 #define MAIN 0
 #define IF 1
@@ -47,10 +43,5 @@ typedef enum{
 
 /* identificador */
 #define ID 28
-
-/* errors*/
-#define ERROR_PARAMETERS_NOT_PASSED 29
-#define ERROR_FILE_NOT_RECOGNIZED 30
-
 
 #endif
