@@ -11,7 +11,12 @@ FILE *file;
 
 #define SPACE ' '
 #define NEW_LINE '\n'
-#define TAG '\t'
+#define TAB_ '\t'
+
+typedef struct __TOKEN{
+    char lexema[257];
+    int symbol;
+}__TOKEN;
 
 
 #endif

@@ -44,4 +44,20 @@
 /* identificador */
 #define ID 28
 
+/* symbols */
+#define S_MENOR '<'
+#define S_MAIOR '>'
+#define S_IGUAL '='
+#define S_MULTIPLICACAO '*'
+#define S_DIVISAO '/'
+#define S_SOMA '+'
+#define S_SUBTRACAO '-'
+#define S_ABRE_PARENTESES '('
+#define S_FECHA_PARENTESES ')'
+#define S_ABRE_CHAVES '{'
+#define S_FECHA_CHAVES '}'
+#define S_PONTO_VIRGULA ';'
+#define S_VIRGULA ','
+#define S_EXCLAMACAO '!'
+
 #endif

@@ -1,8 +1,9 @@
 #ifndef SCANNER_H_
 #define SCANNER_H_
 
+#include "globals.h"
 
-int _SCAN();
+__TOKEN _SCAN();
 void readFile();
 
 #endif
