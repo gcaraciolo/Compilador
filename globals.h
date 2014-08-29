@@ -13,10 +13,13 @@ FILE *file;
 #define NEW_LINE '\n'
 #define TAB_ '\t'
 
+#define MAX_CHARACTER 257
+
 typedef struct __TOKEN{
-    char lexema[257];
+    char lexema[MAX_CHARACTER];
     int symbol;
 }__TOKEN;
+
 
 
 #endif
