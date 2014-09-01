@@ -1,0 +1,8 @@
+!=
+a*aaa
+a+aaa
+a-aaa
+a/aaa
+a=aaa
+apaaa
+a_aaa

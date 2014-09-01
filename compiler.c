@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 		return ERROR_PARAMETERS_NOT_PASSED;
 	}*/
 	
-	argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/testscanner.txt";
+	argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/errors_test_scanner.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");

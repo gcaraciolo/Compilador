@@ -71,6 +71,7 @@
 #define S_CHAR                          "char"
 #define SPACE                           ' '
 #define NEW_LINE                        '\n'
+#define NEW_LINE2                       '\xff'
 #define TAB_                            '\t'
 #define END_OF_FILE                     300
 
