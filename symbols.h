@@ -69,5 +69,9 @@
 #define S_INT                           "int"
 #define S_FLOAT                         "float"
 #define S_CHAR                          "char"
+#define SPACE                           ' '
+#define NEW_LINE                        '\n'
+#define TAB_                            '\t'
+#define END_OF_FILE                     300
 
 #endif

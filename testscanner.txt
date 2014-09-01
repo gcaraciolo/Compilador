@@ -1,13 +1,1 @@
-main
-if
-else
-do
-while
-for
-int
-float
-char
-aaa
-bsas
-*
-+
+!.

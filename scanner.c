@@ -37,20 +37,32 @@ boolean verifyKeyword(const char *str){
     return false;
 }
 
+char readCharacter(){
+    char lookahead = fgetc(file);
+    if (NEW_LINE == lookahead) {
+        linha++;
+        coluna = 0;
+    }else if(TAB_ == lookahead){
+        coluna += 4;
+    }else{
+        coluna++;
+    }
+    return lookahead;
+}
+
 __TOKEN _SCAN(){
 	static char lookahead = SPACE;
-    int status;
     __TOKEN token;
     int pointer = 0;
     
     while (verifyLookahead(lookahead)) {
-        lookahead = fgetc(file);
+        lookahead = readCharacter();
     }
     
     if (EOF == lookahead) {
         token.lexema[pointer++] = lookahead;
-        token.symbol = 100;
-    }else{
+        token.symbol = END_OF_FILE;
+    } else {
         token.lexema[pointer++] = lookahead;
         switch (lookahead) {
             /* oparitimeticos */
@@ -77,12 +89,12 @@ __TOKEN _SCAN(){
                 
                 
             case S_EXCLAMACAO:
-                status = (lookahead = fgetc(file));
+                lookahead = readCharacter();
                 token.lexema[pointer++] = lookahead;
                 if (S_IGUAL == lookahead) {
                     token.symbol = DIFERENTE_COMPARACAO;
                 }else{
-                    token.symbol = 1000; //erro
+                    token.symbol = ERROR_OPERADOR_MAL_FORMADO; //erro
                 }
                 break;
 
@@ -92,8 +104,8 @@ __TOKEN _SCAN(){
                 } else if (true == isalpha(lookahead) || S_UNDERLINE == lookahead){
                     /* identificador */
                     do {
-                        if (MAX_CHARACTER == (pointer -1)) {
-                            token.symbol = 2000; //erro
+                        if (MAX_CHARACTER == (pointer - 1)) {
+                            token.symbol = ERROR_VARIABLE_TOO_LONG;
                             break;
                         }
                         lookahead = fgetc(file);
@@ -112,7 +124,7 @@ __TOKEN _SCAN(){
                     } while (true == isalnum(lookahead) || S_UNDERLINE == lookahead);
 
                 } else{
-                    token.symbol = 1000;
+                    token.symbol = ERROR_UNKNOW_SYMBOL;
                 }
         }
     }
@@ -121,51 +133,48 @@ __TOKEN _SCAN(){
 }
 
 void printToken(__TOKEN token){
-    int i;
-    if (token.symbol == ID) {
-        printf ("---------------------\n");
-        printf("lexema: %s\n",token.lexema);
-        printf("symbol: %d - ID\n",token.symbol);
-        printf ("---------------------\n");
-    } else if (verifyKeyword(token.lexema)){
-        printf ("---------------------\n");
-        printf("lexema: %s\n",token.lexema);
-        printf("symbol: %d - palavra reservada\n",token.symbol);
-        printf ("---------------------\n");
-        
-    } else if (token.symbol > 29) {
-        printf ("---------------------\n");
-        printf ("lexema esconhecido: ");
-        for (i = 0; i < strlen(token.lexema); i++) {
-            if(token.lexema[i] == NEW_LINE){
-                printf("newline");
-            }else if (token.lexema[i] == TAB_){
-                printf("tab");
-            }else if (token.lexema[i] == SPACE){
-                printf("space");
-            }else if (token.lexema[i] == EOF){
-                printf("end of file");
-            }else{
-                printf("%c",token.lexema[i]);
-            }
-        }
+    if (token.symbol > 29) {
+        printf ("lexema desconhecido: ");
         printf ("\nsymbol: %d\n",token.symbol);
-        printf("---------------------\n");
     }
-
 }
 
+void errorMessage(const char *message){
+    printf("ERRO na linha %d, coluna %d, ultimo token lido t: %s\n", linha, coluna, message);
+}
+
+boolean verifyToken(__TOKEN token){
+    if(ERROR_OPERADOR_MAL_FORMADO == token.symbol){
+        errorMessage("operador != mal formado");
+        return true;
+    }
+    
+    return false;
+}
 
 void readFile(){
     __TOKEN token;
+    linha = coluna = 0;
     while(true){
         token = _SCAN();
-        printToken(token);
-        if(token.symbol == 100){
+        if(verifyToken(token)){
+            break;
+        }
+        if(token.symbol == END_OF_FILE){
             break;
         }
     }
-    
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

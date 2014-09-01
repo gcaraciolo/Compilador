@@ -9,10 +9,6 @@ typedef enum{
 
 FILE *file;
 
-#define SPACE ' '
-#define NEW_LINE '\n'
-#define TAB_ '\t'
-
 #define MAX_CHARACTER 257
 
 typedef struct __TOKEN{
@@ -20,6 +16,7 @@ typedef struct __TOKEN{
     int symbol;
 }__TOKEN;
 
+int linha, coluna;
 
 
 #endif
