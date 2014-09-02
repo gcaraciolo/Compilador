@@ -32,7 +32,7 @@ boolean verifyLookahead(char lookahead){
     return false;
 }
 
-boolean verifyKeyword(const char *str){
+boolean verifyKeyword(const char *str){    
     if (strcmp(str, S_MAIN) == 0) {
         return MAIN;
     }else if (strcmp(str, S_IF) == 0){
@@ -84,10 +84,6 @@ __TOKEN _SCAN(){
         token.lexema[pointer++] = lookahead;
         switch (lookahead) {
             /* oparitimeticos */
-            case S_MULTIPLICACAO:
-                token.symbol = MULTIPLICACAO;
-                lookahead = readCharacter();
-                break;
             case S_SOMA:
                 token.symbol = SOMA;
                 lookahead = readCharacter();
@@ -97,16 +93,65 @@ __TOKEN _SCAN(){
                 lookahead = readCharacter();
                 break;
             case S_IGUAL:
-                token.symbol = IGUAL_ATRIBUICAO;
                 lookahead = readCharacter();
-                ///mais coisas
+                if(S_IGUAL == lookahead){
+                    token.symbol = IGUAL_COMPARACAO;
+                    token.lexema[pointer++] = lookahead;
+                    lookahead = readCharacter();
+                }else{
+                    token.symbol = IGUAL_ATRIBUICAO;
+                }
+                break;
+            case S_MULTIPLICACAO:
+                token.symbol = MULTIPLICACAO;
+                lookahead = readCharacter();
                 break;
             case S_DIVISAO:
-                token.symbol = DIVISAO;
                 lookahead = readCharacter();
-                ///mais coisas
+                if (S_MULTIPLICACAO == lookahead) {
+                    token.lexema[pointer++] = lookahead;
+                    while (true) {
+                        lookahead = readCharacter();
+                        if (EOF == lookahead) {
+                            token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
+                            break;
+                        }else if (S_MULTIPLICACAO == lookahead){
+                            lookahead = readCharacter();
+                            if (S_DIVISAO == lookahead) {
+                                token.symbol = COMMENT;
+                                break;
+                            }
+                        }
+                    }
+                } else if (S_DIVISAO == lookahead){
+                    token.symbol = COMMENT;
+                    token.lexema[pointer++] = lookahead;
+                    lookahead = readCharacter();
+                    while ((lookahead = readCharacter()) != NEW_LINE);
+                } else {
+                    token.symbol = DIVISAO;
+                }
                 break;
-                
+            case S_MAIOR:
+                lookahead = readCharacter();
+                if (S_IGUAL == lookahead) {
+                    token.lexema[pointer++] = lookahead;
+                    token.symbol = MAIOR_IGUAL;
+                    lookahead = readCharacter();
+                } else {
+                    token.symbol = MAIOR;
+                }
+                break;
+            case S_MENOR:
+                lookahead = readCharacter();
+                if (S_IGUAL == lookahead) {
+                    token.lexema[pointer++] = lookahead;
+                    token.symbol = MAIOR_IGUAL;
+                    lookahead = readCharacter();
+                } else {
+                    token.symbol = MENOR;
+                }
+                break;
                 
             case S_EXCLAMACAO:
                 lookahead = readCharacter();
@@ -118,10 +163,80 @@ __TOKEN _SCAN(){
                     token.symbol = ERROR_OPERADOR_MAL_FORMADO; //erro
                 }
                 break;
-
+            
+            case S_ASPAS_SIMPLES:
+                lookahead = readCharacter();
+                token.lexema[pointer++] = lookahead;
+                if (true == isalnum(lookahead)) {
+                    lookahead = readCharacter();
+                    token.lexema[pointer++] = lookahead;
+                    if (S_ASPAS_SIMPLES == lookahead) {
+                        token.symbol = CHAR;
+                        lookahead = readCharacter();
+                    } else {
+                        token.symbol = ERROR_CHAR_MAL_FORMADO;
+                    }
+                } else {
+                    token.symbol = ERROR_CHAR_MAL_FORMADO;
+                }
+                break;
+            /* especiais */
+            case S_ABRE_CHAVES:
+                token.symbol = ABRE_CHAVES;
+                lookahead = readCharacter();
+                break;
+            case S_FECHA_CHAVES:
+                token.symbol = FECHA_CHAVES;
+                lookahead = readCharacter();
+                break;
+            case S_ABRE_PARENTESES:
+                token.symbol = ABRE_PARENTESES;
+                lookahead = readCharacter();
+                break;
+            case S_FECHA_PARENTESES:
+                token.symbol = FECHA_PARENTESES;
+                lookahead = readCharacter();
+                break;
+            case S_VIRGULA:
+                token.symbol = VIRGULA;
+                lookahead = readCharacter();
+                break;
+            case S_PONTO_VIRGULA:
+                token.symbol = PONTO_VIRGULA;
+                lookahead = readCharacter();
+                break;
+            case S_PONTO:
+                /* could be float*/
+                lookahead = readCharacter();
+                goto digito_float;
+                
             default:
                 if (true == isdigit(lookahead)) {
-                    token.symbol = DIGITO;
+                    while (true) {
+                        lookahead = readCharacter();
+                        if (true == isdigit(lookahead)) {
+                            token.lexema[pointer++] = lookahead;
+                        } else if(S_PONTO == lookahead){
+                            /* float */
+                            digito_float:
+                            token.lexema[pointer++] = lookahead;
+                            lookahead = readCharacter();
+                            if (true == isdigit(lookahead)) {
+                                token.symbol = DIGITO_FLUTUANTE;
+                                token.lexema[pointer++] = lookahead;
+                                while (isdigit(lookahead = readCharacter())) {
+                                    token.lexema[pointer++] = lookahead;
+                                }
+                                break;
+                            } else {
+                                token.symbol = ERROR_FLOAT_MAL_FORMADO;
+                                break;
+                            }
+                        } else {
+                            token.symbol = DIGITO;
+                            break;
+                        }
+                    }
                 } else if (true == isalpha(lookahead) || S_UNDERLINE == lookahead){
                     /* identificador */
                     while (true){
@@ -159,26 +274,33 @@ __TOKEN _SCAN(){
 }
 
 void printToken(__TOKEN token){
-    if (token.symbol > 29 && END_OF_FILE != token.symbol) {
-        printf ("lexema desconhecido: ");
-        printf ("\nsymbol: %d\n\n",token.symbol);
-    } else {
-        printf("lexema: %s\n",token.lexema);
-        printf("symbol: %d\n\n",token.symbol);
-    }
+    printf("lexema: %s\n",token.lexema);
+    printf("symbol: %d\n\n",token.symbol);
+    
 }
 
-void errorMessage(const char *message){
-    printf("ERRO na linha %d, coluna %d, ultimo token lido t: %s\n", linha, coluna, message);
+void errorMessage(__TOKEN token, const char *message){
+    printf("ERRO na linha %d, coluna %d, ultimo token lido %s: %s\n", linha, coluna, token.lexema, message);
 }
 
 boolean verifyToken(__TOKEN token){
     if(ERROR_OPERADOR_MAL_FORMADO == token.symbol){
-        errorMessage("operador != mal formado");
-        return true;
+        errorMessage(token, "operador != mal formado");
+        return false;
+    } else if (ERROR_CHAR_MAL_FORMADO == token.symbol){
+        errorMessage(token, "caracter mal formado");
+        return false;
+    } else if (ERROR_FLOAT_MAL_FORMADO == token.symbol){
+        errorMessage(token, "float mal formado");
+        return false;
+    } else if (ERROR_UNKNOW_SYMBOL == token.symbol){
+        errorMessage(token, "caracter invalido");
+        return false;
+    } else if (ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == token.symbol){
+        errorMessage(token, "comentario nao encerrado.");
+        return false;
     }
-    
-    return false;
+    return true;
 }
 
 void readFile(){
@@ -187,12 +309,14 @@ void readFile(){
     coluna = 0;
     while(true){
         token = _SCAN();
-        if(verifyToken(token)){
+        if(!verifyToken(token)){
             break;
         }else{
             printToken(token);
         }
+            
         if(token.symbol == END_OF_FILE){
+            printf("Build succeeded.\n");
             break;
         }
     }
