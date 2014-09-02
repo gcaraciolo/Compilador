@@ -6,6 +6,7 @@
 #include "symbols.h"
 #include "globals.h"
 #include "messages.h"
+#include "fileActions.h"
 
 boolean verifyLookahead(char lookahead){
     switch (lookahead) {
@@ -314,6 +315,7 @@ void readFile(){
             printf("Build succeeded.\n");
             break;
         }
+        printToken(token);
         if(!verifyToken(token)){
             break;
         }

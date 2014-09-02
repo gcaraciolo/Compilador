@@ -8,14 +8,14 @@
 
 int main(int argc, char *argv[]){
 	int statusFile;
-
-	/*
+	
+	
 	if(argc < 2){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
-	}*/
+	}
 	
-	argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/errors_test_scanner.txt";
+	//argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/errors_test_scanner.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");
@@ -31,15 +31,11 @@ int main(int argc, char *argv[]){
 	readFile();
 
 
-
-
-
 	statusFile = closeFile();
 	if(ERROR_FILE_CLOSED_UNSECCESSFULLY == statusFile){
 		printf ("File closed unseccessfully.\n");
 		return ERROR_FILE_CLOSED_UNSECCESSFULLY;
 	}
-
 
 	return 0;
 }
