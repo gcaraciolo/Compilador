@@ -123,6 +123,7 @@ __TOKEN _SCAN(){
                             }
                         }
                     }
+                    lookahead = readCharacter();
                 } else if (S_DIVISAO == lookahead){
                     token.symbol = COMMENT;
                     token.lexema[pointer++] = lookahead;
@@ -309,14 +310,11 @@ void readFile(){
     coluna = 0;
     while(true){
         token = _SCAN();
-        if(!verifyToken(token)){
-            break;
-        }else{
-            printToken(token);
-        }
-            
         if(token.symbol == END_OF_FILE){
             printf("Build succeeded.\n");
+            break;
+        }
+        if(!verifyToken(token)){
             break;
         }
     }
