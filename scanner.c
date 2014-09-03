@@ -69,6 +69,46 @@ char readCharacter(){
     return lookahead;
 }
 
+void invalidCharacters(char *lookahead){
+    char auxComment;
+    char pointerFile;
+    while (true) {
+        pointerFile = readCharacter();
+        if (S_DIVISAO == pointerFile) {
+            auxComment = readCharacter();
+            if (S_MULTIPLICACAO == auxComment) {
+                /* block comment */
+                while(true) {
+                    auxComment = readCharacter();
+                    if (S_MULTIPLICACAO == auxComment) {
+                        auxComment = readCharacter();
+                        if (S_DIVISAO == auxComment) {
+                            break;
+                        }else if (EOF == auxComment){
+                            *lookahead = EOF;
+                        }
+                    }
+                }
+                
+            } else if (S_DIVISAO == auxComment){
+                while (true) {
+                    auxComment = readCharacter();
+                    if (NEW_LINE == auxComment || NEW_LINE2 == auxComment || EOF == auxComment) {
+                        break;
+                    }
+                }
+                
+            } else {
+                *lookahead = pointerFile;
+                break;
+            }
+        } else if (!isspace(pointerFile)){
+            *lookahead = pointerFile;
+            break;
+        }
+    }
+}
+
 __TOKEN _SCAN(){
 	static char lookahead = SPACE;
     __TOKEN token;
