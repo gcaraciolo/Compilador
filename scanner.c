@@ -69,12 +69,25 @@ char readCharacter(){
     return lookahead;
 }
 
-void invalidCharacters(char *lookahead){
+int invalidCharacters(char *lookahead){
     char auxComment;
-    char pointerFile;
+    char pointerFile = *lookahead;
     while (true) {
-        pointerFile = readCharacter();
-        if (S_DIVISAO == pointerFile) {
+    start:
+            pointerFile = readCharacter();
+        if (isspace(pointerFile)) {
+            continue;
+        } else if (EOF == pointerFile) {
+            //ending file without comment
+            *lookahead = EOF;
+            break;
+        } else if (S_DIVISAO != pointerFile) {
+            //valid token
+            *lookahead = pointerFile;
+            break;
+        } else {
+            //S_MULTIPLICACAO
+        comment:
             auxComment = readCharacter();
             if (S_MULTIPLICACAO == auxComment) {
                 /* block comment */
@@ -83,14 +96,20 @@ void invalidCharacters(char *lookahead){
                     if (S_MULTIPLICACAO == auxComment) {
                         auxComment = readCharacter();
                         if (S_DIVISAO == auxComment) {
-                            break;
+                            //going to begin of this funcion
+                            goto start;
                         }else if (EOF == auxComment){
-                            *lookahead = EOF;
+                            //chamar erro e aborta programa
+                            return ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
                         }
+                    }else if (EOF == auxComment){
+                        //chamar erro e aborta programa
+                        return ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
                     }
                 }
                 
             } else if (S_DIVISAO == auxComment){
+                /* inline comment */
                 while (true) {
                     auxComment = readCharacter();
                     if (NEW_LINE == auxComment || NEW_LINE2 == auxComment || EOF == auxComment) {
@@ -99,27 +118,29 @@ void invalidCharacters(char *lookahead){
                 }
                 
             } else {
+                //going to case: S_DIVISAO
                 *lookahead = pointerFile;
                 break;
             }
-        } else if (!isspace(pointerFile)){
-            *lookahead = pointerFile;
-            break;
         }
     }
+    return true;
 }
 
 __TOKEN _SCAN(){
 	static char lookahead = SPACE;
-    __TOKEN token;
+    static __TOKEN token;
     int pointer = 0;
     
     //incluir comment nesse while
-    while (isspace(lookahead)) {
-        lookahead = readCharacter();
-    }
+    //while (isspace(lookahead)) {
+      //  lookahead = readCharacter();
+    //}
     
-    if (EOF == lookahead) {
+    if(ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == invalidCharacters(&lookahead)){
+        pointer += strlen(token.lexema);
+        token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
+    }else if (EOF == lookahead) {
         token.lexema[pointer++] = lookahead;
         token.symbol = END_OF_FILE;
     } else {
@@ -150,30 +171,6 @@ __TOKEN _SCAN(){
                 break;
             case S_DIVISAO:
                 lookahead = readCharacter();
-                if (S_MULTIPLICACAO == lookahead) {
-                    token.lexema[pointer++] = lookahead;
-                    while (true) {
-                        lookahead = readCharacter();
-                        if (EOF == lookahead) {
-                            token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
-                            break;
-                        }else if (S_MULTIPLICACAO == lookahead){
-                            lookahead = readCharacter();
-                            if (S_DIVISAO == lookahead) {
-                                token.symbol = COMMENT;
-                                break;
-                            }
-                        }
-                    }
-                    lookahead = readCharacter();
-                } else if (S_DIVISAO == lookahead){
-                    token.symbol = COMMENT;
-                    token.lexema[pointer++] = lookahead;
-                    lookahead = readCharacter();
-                    while ((lookahead = readCharacter()) != NEW_LINE);
-                } else {
-                    token.symbol = DIVISAO;
-                }
                 break;
             case S_MAIOR:
                 lookahead = readCharacter();
