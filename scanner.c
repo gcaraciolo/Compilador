@@ -69,16 +69,55 @@ char readCharacter(){
     return lookahead;
 }
 
+// lookahead já ta com S_DIVISAO
+void commentLogic(){
+    char pointerFile;
+    pointerFile = readCharacter();
+    if (S_DIVISAO == pointerFile) {
+        /* inline comment */
+        while (true) {
+            pointerFile = readCharacter();
+            if (NEW_LINE == pointerFile || NEW_LINE2 == pointerFile || EOF == pointerFile) {
+                return; // no errors
+            }
+        }
+    }else if (S_MULTIPLICACAO == pointerFile){
+        /* block comment */
+        while (true) {
+            pointerFile = readCharacter();
+            if (S_MULTIPLICACAO == pointerFile) {
+                while (S_MULTIPLICACAO == pointerFile) {
+                    pointerFile = readCharacter();
+                }
+                if (S_DIVISAO == pointerFile) {
+                    /* ending comment */
+                    break;
+                }else if(EOF == pointerFile){
+                    break;// return error_comment
+                }
+            }else if(EOF == pointerFile){
+                break;// return error_commet
+            }
+        }
+    }
+}
+
 int invalidCharacters(char *lookahead){
     char auxComment;
     char pointerFile = *lookahead;
+    
+    if (S_DIVISAO == pointerFile){
+        //all comment logic
+    }else {
+        
+    }
+    
     while (true) {
     start:
-            pointerFile = readCharacter();
+        pointerFile = readCharacter();
         if (isspace(pointerFile)) {
             continue;
         } else if (EOF == pointerFile) {
-            //ending file without comment
             *lookahead = EOF;
             break;
         } else if (S_DIVISAO != pointerFile) {
@@ -137,12 +176,12 @@ __TOKEN _SCAN(){
       //  lookahead = readCharacter();
     //}
     
-    if(ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == invalidCharacters(&lookahead)){
-        pointer += strlen(token.lexema);
-        token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
-    }else if (EOF == lookahead) {
+    if (EOF == lookahead) {
         token.lexema[pointer++] = lookahead;
         token.symbol = END_OF_FILE;
+    }else if(ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == invalidCharacters(&lookahead)){
+        pointer += strlen(token.lexema);
+        token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
     } else {
         token.lexema[pointer++] = lookahead;
         switch (lookahead) {
