@@ -74,6 +74,7 @@ __TOKEN _SCAN(){
     __TOKEN token;
     int pointer = 0;
     
+    //incluir comment nesse while
     while (isspace(lookahead)) {
         lookahead = readCharacter();
     }

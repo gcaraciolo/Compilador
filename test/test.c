@@ -7,6 +7,8 @@
 
 char *route = "test/testFile.txt";
 
+//writte tests about file endind with comment
+
 
 void createFileTest(){
 	file = fopen(route, "w+");
@@ -15,7 +17,6 @@ void createFileTest(){
 }
 
 int main(int argc, char *argv[]){
-	int compiler = 0;
 	int statusFile;
 	
 	createFileTest();
