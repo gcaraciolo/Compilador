@@ -120,8 +120,6 @@ int commentLogic(char *lookahead){
         }
         *lookahead = readCharacter();
         return COMMENT;
-    } else {
-        *lookahead = pointerFile; // oparitimetico divisao
     }
     return DIVISAO;
 }
@@ -152,6 +150,7 @@ __TOKEN _SCAN(){
         } else {
             token.lexema[pointer++] = lookahead;
             token.symbol = DIVISAO;
+            lookahead = readCharacter();
         }
         //ja foi feita a leitura do proximo character
         //lookahead = readCharacter();
