@@ -1,2 +1,11 @@
 !=
 a*aaa
+//rr
+*
++
+/
+*
+ola
+//asd
+/*asdasd
+ss****a/*/
