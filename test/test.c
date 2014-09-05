@@ -1,10 +1,11 @@
 #include <stdio.h>
-#include "../scanner.h"
-#include "../symbols.h"
-#include "../messages.h"
-#include "../fileActions.h"
-#include "../globals.h"
+#include "scanner.h"
+#include "symbols.h"
+#include "messages.h"
+#include "fileActions.h"
+#include "globals.h"
 
+/*
 char *route = "test/testFile.txt";
 
 //writte tests about file endind with comment
@@ -36,4 +37,4 @@ int main(int argc, char *argv[]){
 	}
 
 	return 0;
-}
+}*/

@@ -217,38 +217,27 @@ __TOKEN _SCAN(){
                         }
                     }
                 } else if (true == isalpha(lookahead) || S_UNDERLINE == lookahead){
-                    /* identificador */
-                    while (true){
-                        if (MAX_CHARACTER == (pointer - 1)) {
-                            token.symbol = ERROR_VARIABLE_TOO_LONG;
-                            break;
-                        }
+                    /* identificador or keyword */
+                    while (true) {
                         lookahead = readCharacter();
-                        //verify lexema's end.
-                        if(verifyLookahead(lookahead)){
-                            //verify if is a keyword
-                            token.lexema[pointer] = '\0';
-                            if (!verifyKeyword(token.lexema)){
-                                //not keyword
-                                token.symbol = ID;
-                            }else{
-                                token.symbol = verifyKeyword(token.lexema);
-                            }
-                            break;
-                        }
-                        if (true == isalnum(lookahead) || S_UNDERLINE == lookahead) {
+                        if(!verifyLookahead(lookahead)){
                             token.lexema[pointer++] = lookahead;
-                        } else {
+                        }else{
                             break;
                         }
                     }
-
+                    token.symbol = ID;
                 } else{
                     token.symbol = ERROR_UNKNOW_SYMBOL;
                 }
         }
     }
     token.lexema[pointer] = '\0';
+    if (ID == token.symbol) {
+        if(verifyKeyword(token.lexema)){
+            token.symbol = verifyKeyword(token.lexema);
+        }
+    }
     return token;
 }
 
