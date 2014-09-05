@@ -215,7 +215,7 @@ __TOKEN _SCAN(){
             case S_ASPAS_SIMPLES:
                 lookahead = readCharacter();
                 token.lexema[pointer++] = lookahead;
-                if (true == isalnum(lookahead)) {
+                if (false != isalnum(lookahead)) {
                     lookahead = readCharacter();
                     token.lexema[pointer++] = lookahead;
                     if (S_ASPAS_SIMPLES == lookahead) {
@@ -259,17 +259,17 @@ __TOKEN _SCAN(){
                 goto digito_float;
                 
             default:
-                if (true == isdigit(lookahead)) {
+                if (false != isdigit(lookahead)) {
                     while (true) {
                         lookahead = readCharacter();
-                        if (true == isdigit(lookahead)) {
+                        if (false != isdigit(lookahead)) {
                             token.lexema[pointer++] = lookahead;
                         } else if(S_PONTO == lookahead){
                             /* float */
                             digito_float:
                             token.lexema[pointer++] = lookahead;
                             lookahead = readCharacter();
-                            if (true == isdigit(lookahead)) {
+				if (false != isdigit(lookahead)) {
                                 token.symbol = DIGITO_FLUTUANTE;
                                 token.lexema[pointer++] = lookahead;
                                 while (isdigit(lookahead = readCharacter())) {
@@ -329,7 +329,7 @@ void readFile(){
             printf("Build succeeded.\n");
             break;
         }
-        printToken(token);
+       // printToken(token);
     }
 }
 
