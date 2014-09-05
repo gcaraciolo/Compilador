@@ -285,11 +285,11 @@ __TOKEN _SCAN(){
                             break;
                         }
                     }
-                } else if (true == isalpha(lookahead) || S_UNDERLINE == lookahead){
+                } else if (false != isalpha(lookahead) || S_UNDERLINE == lookahead){
                     /* identificador or keyword */
                     while (true) {
                         lookahead = readCharacter();
-                        if(!verifyLookahead(lookahead)){
+                        if(false != isalnum(lookahead) || S_UNDERLINE == lookahead){
                             token.lexema[pointer++] = lookahead;
                         }else{
                             break;
