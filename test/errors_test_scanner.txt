@@ -1,5 +1,5 @@
 // os 5 erros do scanner
-// este codigo contem todos os erros que o scanner precisa acusar... 
+// este codigo contem todos os erros que o scanner precisa acusar...
 // para testar, va corrigindo cada erro 'a medida em que seu projeto for identificando
 
 
@@ -29,3 +29,5 @@ asd
 f
 asd
 fsadfliuonfof8093u-r0183=-@#%##!****@21312*/
+
+c = 5/6;

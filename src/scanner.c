@@ -33,7 +33,7 @@ boolean verifyLookahead(char lookahead){
     return false;
 }
 
-boolean verifyKeyword(const char *str){    
+boolean verifyKeyword(const char *str){
     if (strcmp(str, S_MAIN) == 0) {
         return MAIN;
     }else if (strcmp(str, S_IF) == 0){
@@ -52,7 +52,7 @@ boolean verifyKeyword(const char *str){
         return FLOAT;
     }else if (strcmp(str, S_CHAR) == 0){
         return CHAR;
-    }   
+    }
     return false;
 }
 
@@ -93,7 +93,7 @@ char readCharacter(){
     return lookahead;
 }
 
-int commentLogic(char *lookahead){
+int commentLogic(char *lookahead, __TOKEN *token){
     char pointerFile;
     pointerFile = readCharacter();
     if (S_DIVISAO == pointerFile) {
@@ -121,6 +121,9 @@ int commentLogic(char *lookahead){
         *lookahead = readCharacter();
         return COMMENT;
     }
+    (*token).lexema[0] = *lookahead;
+    (*token).symbol = DIVISAO;
+    *lookahead = pointerFile;
     return DIVISAO;
 }
 
@@ -129,31 +132,28 @@ __TOKEN _SCAN(){
     static __TOKEN token;
     long pointer;
     int statusComment = -1;
-    
+
     start:
     pointer = 0;
     //incluir comment nesse while
     while (isspace(lookahead)) {
         lookahead = readCharacter();
     }
-    
+
     if (EOF == lookahead) {
         token.lexema[pointer++] = lookahead;
         token.symbol = END_OF_FILE;
     } else if(S_DIVISAO == lookahead){
-        statusComment = commentLogic(&lookahead);
+        statusComment = commentLogic(&lookahead, &token);
         if (COMMENT == statusComment) {
             goto start;
         } else if(ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == statusComment) {
             pointer = strlen(token.lexema);
             token.symbol = ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO;
-        } else {
-            token.lexema[pointer++] = lookahead;
-            token.symbol = DIVISAO;
-            lookahead = readCharacter();
+        } else if (DIVISAO == statusComment) {
+          //token already filled, just update pointer for put '\0' in the correct position in the end of this func
+          pointer++;
         }
-        //ja foi feita a leitura do proximo character
-        //lookahead = readCharacter();
     } else {
         token.lexema[pointer++] = lookahead;
         switch (lookahead) {
@@ -200,18 +200,18 @@ __TOKEN _SCAN(){
                     token.symbol = MENOR;
                 }
                 break;
-                
+
             case S_EXCLAMACAO:
                 lookahead = readCharacter();
                 token.lexema[pointer++] = lookahead;
                 if (S_IGUAL == lookahead) {
                     token.symbol = DIFERENTE_COMPARACAO;
-                    lookahead = readCharacter();                    
+                    lookahead = readCharacter();
                 }else{
                     token.symbol = ERROR_OPERADOR_MAL_FORMADO; //erro
                 }
                 break;
-            
+
             case S_ASPAS_SIMPLES:
                 lookahead = readCharacter();
                 token.lexema[pointer++] = lookahead;
@@ -257,7 +257,7 @@ __TOKEN _SCAN(){
                 /* could be float*/
                 lookahead = readCharacter();
                 goto digito_float;
-                
+
             default:
                 if (false != isdigit(lookahead)) {
                     while (true) {
@@ -310,13 +310,12 @@ __TOKEN _SCAN(){
     if(!verifyToken(token)){
         exit(1);
     }
-    
+
     return token;
 }
 
 void printToken(__TOKEN token){
-    printf("lexema: %s\n",token.lexema);
-    printf("symbol: %d\n\n",token.symbol);
+    printf("|lexema, symbol|: |%s, %d|\n",token.lexema, token.symbol);
 }
 
 void readFile(){
