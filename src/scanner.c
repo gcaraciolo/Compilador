@@ -255,7 +255,6 @@ __TOKEN _SCAN(){
                 break;
             case S_PONTO:
                 /* could be float*/
-                lookahead = readCharacter();
                 goto digito_float;
 
             default:
@@ -266,8 +265,8 @@ __TOKEN _SCAN(){
                             token.lexema[pointer++] = lookahead;
                         } else if(S_PONTO == lookahead){
                             /* float */
-                            digito_float:
                             token.lexema[pointer++] = lookahead;
+                            digito_float:
                             lookahead = readCharacter();
 				if (false != isdigit(lookahead)) {
                                 token.symbol = DIGITO_FLUTUANTE;
@@ -328,7 +327,7 @@ void readFile(){
             printf("Build succeeded.\n");
             break;
         }
-       // printToken(token);
+        printToken(token);
     }
 }
 
