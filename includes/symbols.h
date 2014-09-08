@@ -40,9 +40,12 @@
 
 /* digito */
 #define DIGITO                          28
+#define DIGITO_FLUTUANTE                29
 
 /* identificador */
-#define ID                              29
+#define ID                              30
+
+#define COMMENT                         31
 
 /* symbols */
 #define S_MENOR                         '<'
@@ -60,6 +63,9 @@
 #define S_VIRGULA                       ','
 #define S_EXCLAMACAO                    '!'
 #define S_UNDERLINE                     '_'
+#define S_PONTO                         '.'
+#define S_ASPAS_SIMPLES                 '\''
+#define S_ASPAS_DUPLAS                  '\"'
 #define S_MAIN                          "main"
 #define S_IF                            "if"
 #define S_ELSE                          "else"
@@ -71,6 +77,7 @@
 #define S_CHAR                          "char"
 #define SPACE                           ' '
 #define NEW_LINE                        '\n'
+#define NEW_LINE2                       '\xff'
 #define TAB_                            '\t'
 #define END_OF_FILE                     300
 
