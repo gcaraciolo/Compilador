@@ -327,7 +327,7 @@ void readFile(){
             printf("Build succeeded.\n");
             break;
         }
-        printToken(token);
+       // printToken(token);
     }
 }
 
