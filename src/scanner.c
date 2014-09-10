@@ -12,7 +12,6 @@ boolean verifyLookahead(char lookahead){
     switch (lookahead) {
         case SPACE:
         case NEW_LINE:
-        case NEW_LINE2:
         case TAB_:
         case S_MENOR:
         case S_MAIOR:
@@ -98,7 +97,7 @@ int commentLogic(char *lookahead, __TOKEN *token){
     pointerFile = readCharacter();
     if (S_DIVISAO == pointerFile) {
         /* inline comment */
-        while (NEW_LINE != pointerFile && NEW_LINE2 != pointerFile && EOF != pointerFile) {
+        while (NEW_LINE != pointerFile && EOF != pointerFile) {
             pointerFile = readCharacter();
         }
         //if it's EOF, there's no diference about read again (the symbol its equal in return of readCharacter)
@@ -327,7 +326,7 @@ void readFile(){
             printf("Build succeeded.\n");
             break;
         }
-       // printToken(token);
+        //printToken(token);
     }
 }
 

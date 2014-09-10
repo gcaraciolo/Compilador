@@ -76,9 +76,9 @@
 #define S_FLOAT                         "float"
 #define S_CHAR                          "char"
 #define SPACE                           ' '
-#define NEW_LINE                        '\n'
-#define NEW_LINE2                       '\xff'
-#define TAB_                            '\t'
+#define NEW_LINE                        12
+//#define NEW_LINE2                     '\xff'
+#define TAB_                            11
 #define END_OF_FILE                     300
 
 #endif
