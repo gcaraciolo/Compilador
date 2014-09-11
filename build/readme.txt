@@ -1,0 +1,6 @@
+for compiler this program:
+in this folder execute:
+$ cmake ..
+and it will create files and a makefile
+then just execute
+$ make
