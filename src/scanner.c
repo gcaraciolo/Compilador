@@ -3,10 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "scanner.h"
-#include "symbols.h"
-#include "globals.h"
-#include "messages.h"
-#include "fileActions.h"
+
 
 boolean verifyLookahead(char lookahead){
     switch (lookahead) {
