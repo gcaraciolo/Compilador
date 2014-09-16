@@ -14,8 +14,8 @@
 #include "globals.h"
 #include "messages.h"
 #include "fileActions.h"
+#include "errors.h"
 
 __TOKEN _SCAN();
-void readFile();
 
 #endif

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "scanner.h"
+#include "parser.h"
 #include "symbols.h"
 #include "messages.h"
 #include "fileActions.h"
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]){
 		return ERROR_COULD_NOT_OPEN_FILE;
 	}
 
-	readFile();
+    parser();
 
 
 	statusFile = closeFile();
@@ -36,6 +37,8 @@ int main(int argc, char *argv[]){
 		printf ("File closed unseccessfully.\n");
 		return ERROR_FILE_CLOSED_UNSECCESSFULLY;
 	}
+    
+    printf("Build succeeded.\n");
 
 	return 0;
 }

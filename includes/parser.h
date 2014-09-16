@@ -14,6 +14,9 @@
 #include "globals.h"
 #include "messages.h"
 #include "fileActions.h"
+#include "errors.h"
+
+void parser();
 
 
 #endif

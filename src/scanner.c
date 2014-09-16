@@ -52,30 +52,6 @@ boolean verifyKeyword(const char *str){
     return false;
 }
 
-void errorMessage(__TOKEN token, const char *message){
-    printf("ERRO na linha %d, coluna %d, ultimo token lido %s: %s\n", linha, coluna, token.lexema, message);
-}
-
-boolean verifyToken(__TOKEN token){
-    if(ERROR_OPERADOR_MAL_FORMADO == token.symbol){
-        errorMessage(token, "operador != mal formado");
-        return false;
-    } else if (ERROR_CHAR_MAL_FORMADO == token.symbol){
-        errorMessage(token, "caracter mal formado");
-        return false;
-    } else if (ERROR_FLOAT_MAL_FORMADO == token.symbol){
-        errorMessage(token, "float mal formado");
-        return false;
-    } else if (ERROR_UNKNOW_SYMBOL == token.symbol){
-        errorMessage(token, "caracter invalido");
-        return false;
-    } else if (ERROR_TERMINAR_ARQUIVO_SEM_FECHAR_COMENTARIO == token.symbol){
-        errorMessage(token, "comentario nao encerrado.");
-        return false;
-    }
-    return true;
-}
-
 char readCharacter(){
     char lookahead = fgetc(file);
     if (NEW_LINE == lookahead) {
@@ -117,6 +93,7 @@ int commentLogic(char *lookahead, __TOKEN *token){
         *lookahead = readCharacter();
         return COMMENT;
     }
+    //DIVISAO
     (*token).lexema[0] = *lookahead;
     (*token).symbol = DIVISAO;
     *lookahead = pointerFile;
@@ -131,7 +108,6 @@ __TOKEN _SCAN(){
 
     start:
     pointer = 0;
-    //incluir comment nesse while
     while (isspace(lookahead)) {
         lookahead = readCharacter();
     }
@@ -309,27 +285,11 @@ __TOKEN _SCAN(){
     return token;
 }
 
+/*
 void printToken(__TOKEN token){
     printf("|lexema, symbol|: |%s, %d|\n",token.lexema, token.symbol);
 }
-
-void readFile(){
-    __TOKEN token;
-    linha = 1;
-    coluna = 0;
-    while(true){
-        token = _SCAN();
-        if(END_OF_FILE == token.symbol){
-            printf("Build succeeded.\n");
-            break;
-        }
-        //printToken(token);
-    }
-}
-
-
-
-
+*/
 
 
 
