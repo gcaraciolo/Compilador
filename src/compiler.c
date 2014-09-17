@@ -1,22 +1,18 @@
 #include <stdio.h>
-#include <string.h>
-#include "scanner.h"
-#include "parser.h"
-#include "symbols.h"
-#include "messages.h"
 #include "fileActions.h"
-#include "globals.h"
+#include "parser.h"
+#include "messages.h"
 
 int main(int argc, char *argv[]){
 	int statusFile;
 	
 
-	if(argc < 2){
+	/*if(argc < 2){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
-	}
+	}*/
 	
-	//argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/testscanner.txt";
+	argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/scanner.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");
@@ -28,7 +24,10 @@ int main(int argc, char *argv[]){
 		printf ("Could not open file.\n");
 		return ERROR_COULD_NOT_OPEN_FILE;
 	}
-
+    
+    linha = 1;
+    coluna = 0;
+    
     parser();
 
 

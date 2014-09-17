@@ -5,7 +5,7 @@
 #include "globals.h"
 
 int openFile (const char *name) {
-    file = fopen (name,"rb"); // file open just for read
+    file = fopen (name, "rb"); // file open just for read
     if (NULL == file) { // could not open file
         	return ERROR_COULD_NOT_OPEN_FILE;
     }

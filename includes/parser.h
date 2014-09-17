@@ -9,12 +9,9 @@
 #ifndef Compilador_parser_h
 #define Compilador_parser_h
 
-#include "scanner.h"
-#include "symbols.h"
 #include "globals.h"
-#include "messages.h"
-#include "fileActions.h"
-#include "errors.h"
+
+__TOKEN token;
 
 void parser();
 

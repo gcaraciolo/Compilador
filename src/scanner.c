@@ -1,9 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
 #include "scanner.h"
-
+#include "symbols.h"
+#include "errors.h"
+#include "messages.h"
 
 boolean verifyLookahead(char lookahead){
     switch (lookahead) {
@@ -54,10 +55,10 @@ boolean verifyKeyword(const char *str){
 
 char readCharacter(){
     char lookahead = fgetc(file);
-    if (NEW_LINE == lookahead) {
+    if (NEW_LINE == (int)lookahead) {
         linha++;
         coluna = 0;
-    }else if(TAB_ == lookahead){
+    }else if(TAB_ == (int)lookahead){
         coluna += 4;
     }else{
         coluna++;
@@ -285,11 +286,10 @@ __TOKEN _SCAN(){
     return token;
 }
 
-/*
 void printToken(__TOKEN token){
     printf("|lexema, symbol|: |%s, %d|\n",token.lexema, token.symbol);
 }
-*/
+
 
 
 
