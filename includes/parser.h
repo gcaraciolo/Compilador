@@ -15,5 +15,18 @@ __TOKEN token;
 
 void parser();
 
+void decl_var();
+int tipo();
+
+void programa();
+void bloco();
+void comando();
+void comando_basico();
+void iteracao();
+void atribuicao();
+void expr_relacional();
+void expr_arit();
+void termo();
+void fator();
 
 #endif

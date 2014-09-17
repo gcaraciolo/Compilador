@@ -9,6 +9,8 @@
 #ifndef SYMBOLS_H_
 #define SYMBOLS_H_
 
+#define UNKNOW_TYPE                    -1
+
 /* reserved words */
 #define MAIN                            1
 #define IF                              2

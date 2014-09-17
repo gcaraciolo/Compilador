@@ -6,13 +6,14 @@
 int main(int argc, char *argv[]){
 	int statusFile;
 	
-
-	/*if(argc < 2){
+    /*
+	if(argc < 2){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
 	}*/
 	
-	argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/scanner.txt";
+	//argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/scanner.txt";
+    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");
