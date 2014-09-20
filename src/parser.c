@@ -62,6 +62,7 @@ void bloco(){
     
     
     decl_var();
+    comando();
     
     
     if (FECHA_CHAVES == token.symbol) {
@@ -70,47 +71,38 @@ void bloco(){
         errorMessage(token, "esperado '}'");
     }
     
-    token = _SCAN();
+   // token = _SCAN();
 }
 
-void decl_var(){
-    switch (tipo()) {
-        case INT:
+void mult_variables(){
+    if (ID == token.symbol) {
+        token = _SCAN();
+        if (PONTO_VIRGULA == token.symbol) {
             token = _SCAN();
-            if (ID == token.symbol) {
-                token = _SCAN();
-                if (PONTO_VIRGULA == token.symbol) {
+        } else if (VIRGULA == token.symbol) {
+            token = _SCAN();
+            while (true) {
+                if (ID == token.symbol) {
                     token = _SCAN();
-                } else if (VIRGULA == token.symbol) {
-                    while (true) {
-                        if (ID == token.symbol) {
-                            token = _SCAN();
-                            if (VIRGULA == token.symbol) {
-                                token = _SCAN();
-                            } else if (PONTO_VIRGULA == token.symbol) {
-                                token = _SCAN();
-                                break;
-                            } else {
-                                errorMessage(token, "");
-                            }
-                        } else {
-                            errorMessage(token, "");
-                        }
+                    if (VIRGULA == token.symbol) {
+                        token = _SCAN();
+                    } else if (PONTO_VIRGULA == token.symbol) {
+                        token = _SCAN();
+                        break;
+                    } else {
+                        errorMessage(token, "esperado ';' no final da declaracao");
                     }
+                } else {
+                    errorMessage(token, "esperado identificador");
                 }
-            } else {
-                errorMessage(token, "");
             }
-            break;
-            
-        default:
-            break;
+        }
+    } else {
+        errorMessage(token, "esperado identificador");
     }
-
-    
 }
 
-int tipo(){
+int getTipo(){
     switch (token.symbol) {
         case INT:
             return INT;
@@ -122,11 +114,36 @@ int tipo(){
     return UNKNOW_TYPE;
 }
 
+void decl_var(){
+    int tipo;
+    do {
+        tipo = getTipo();
+        switch (tipo) {
+            case INT:
+            case CHAR:
+            case FLOAT:
+                token = _SCAN();
+                mult_variables();
+                break;
+            default:
+                break;
+        }
+    } while (UNKNOW_TYPE != tipo);
+}
 
+void atribuicao(){
+    
+}
 
+void comando_basico(){
+    atribuicao();
+}
 
-
-
+void comando(){
+    comando_basico();
+    /*iteracao();
+    condicional();   */
+}
 
 
 

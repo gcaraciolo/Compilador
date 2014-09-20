@@ -11,9 +11,14 @@ int main(int argc, char *argv[]){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
 	}*/
-	
+	//test scanner
 	//argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/scanner.txt";
-    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser.txt";
+    //test main
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/programa.txt";
+    //test declaracao variavel
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/decl_var.txt";
+    //test comando
+    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/comando.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");

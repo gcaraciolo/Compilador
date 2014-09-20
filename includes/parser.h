@@ -22,6 +22,7 @@ void programa();
 void bloco();
 void comando();
 void comando_basico();
+void condicional(); //if else
 void iteracao();
 void atribuicao();
 void expr_relacional();
