@@ -23,15 +23,7 @@ void parser(){
      }*/
 }
 
-/**
- * O main eh o unico nao terminal que chama bloco, e que deve
- * deve obrigatoriamente ter um abre chaves e fecha chaves.
- * A variavel verifyBlock
- *
- */
 void programa (){
-    int verifyBlock;
-    
     if (INT == token.symbol) {
         token = _SCAN();
     } else {
@@ -53,45 +45,36 @@ void programa (){
         errorMessage("esperado ')'");
     }
 
-    verifyBlock = bloco();
-    
-    if (-1 == verifyBlock) {
-        errorMessage("esperado '{'");
-    }else if (-2 == verifyBlock){
-        errorMessage("esperado '}'");
-    }
+    bloco();
     
     if (END_OF_FILE != token.symbol) {
         errorMessage("programa so deve conter a funcao main");
     }
 }
 
-
-/**
- * O retorno da funcao serve apenas para o main.
- * (no if, while) nao eh obrigatorio ter bloco.
- * @return -1 se for erro de nao abrir chaves
- * @return -2 se for erro de nao fechar chaves
- */
-int bloco(){
+void bloco(){
+    boolean open, close;
+    open = close = false;
     if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
+        open = true;
     } else {
-        return -1;
+        return; //se nao tiver esse return bloco vira uma chamada recursiva indireta com a funcao comando basico
     }
-    
     
     decl_var();
     comando();
     
-    
     if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
-    } else {
-        return -2;
+        close = true;
     }
     
-    return 0;
+    if (open && !close) {
+        errorMessage("esperado '}'");
+    }else if (!open && close){
+        errorMessage("esperado '{'");
+    }
 }
 
 void mult_variables(){
@@ -235,6 +218,10 @@ void condicional(){
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
                     comando();
+                    if (ELSE == token.symbol) {
+                        token = _SCAN();
+                        comando();
+                    }
                 } else {
                     errorMessage("esperado ')'");
                 }

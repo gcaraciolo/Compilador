@@ -17,7 +17,7 @@ void decl_var();
 int tipo();
 
 void programa();
-int bloco();
+void bloco();
 void comando();
 void comando_basico();
 void condicional(); //if else
