@@ -11,8 +11,7 @@
 
 #include "globals.h"
 
-void errorScanner(__TOKEN, const char *);
-boolean verifyToken(__TOKEN);
-void errorParser(const char *);
+void errorMessage(__TOKEN, const char *);
+void verifyToken(__TOKEN);
 
 #endif

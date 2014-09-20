@@ -181,7 +181,7 @@ __TOKEN _SCAN(){
                     token.symbol = DIFERENTE_COMPARACAO;
                     lookahead = readCharacter();
                 }else{
-                    token.symbol = ERROR_OPERADOR_MAL_FORMADO; //erro
+                    token.symbol = ERROR_OPERADOR_MAL_FORMADO;
                 }
                 break;
 
@@ -279,9 +279,8 @@ __TOKEN _SCAN(){
             token.symbol = verifyKeyword(token.lexema);
         }
     }
-    if(!verifyToken(token)){
-        exit(1);
-    }
+    
+    verifyToken(token);
 
     return token;
 }

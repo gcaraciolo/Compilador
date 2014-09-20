@@ -27,28 +27,28 @@ void programa (){
     if (INT == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "A funcao main deve ser do tipo int");
     }
     if (MAIN == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "Nao foi achada uma referencia para main");
     }
     if (ABRE_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "esperado '('");
     }
     if (FECHA_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "esperado ')'");
     }
 
     bloco();
     
     if (END_OF_FILE != token.symbol) {
-        errorParser("");
+        errorMessage(token, "");
     }
 }
 
@@ -57,24 +57,21 @@ void bloco(){
     if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "esperado '{'");
     }
     
     
-    
+    decl_var();
     
     
     if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorParser("");
+        errorMessage(token, "esperado '}'");
     }
     
     token = _SCAN();
 }
-
-
-int a,d,e,r;
 
 void decl_var(){
     switch (tipo()) {
@@ -94,15 +91,15 @@ void decl_var(){
                                 token = _SCAN();
                                 break;
                             } else {
-                                errorParser("");
+                                errorMessage(token, "");
                             }
                         } else {
-                            errorParser("");
+                            errorMessage(token, "");
                         }
                     }
                 }
             } else {
-                errorParser("");
+                errorMessage(token, "");
             }
             break;
             
