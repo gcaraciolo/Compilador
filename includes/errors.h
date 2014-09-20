@@ -11,7 +11,7 @@
 
 #include "globals.h"
 
-void errorMessage(__TOKEN, const char *);
-void verifyToken(__TOKEN);
+void errorMessage(const char *);
+void verifyToken();
 
 #endif

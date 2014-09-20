@@ -11,8 +11,6 @@
 
 #include "globals.h"
 
-__TOKEN token;
-
 void parser();
 
 void decl_var();

@@ -25,6 +25,6 @@ typedef struct __TOKEN{
 }__TOKEN;
 
 int linha, coluna;
-
+__TOKEN token;
 
 #endif

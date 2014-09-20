@@ -27,28 +27,28 @@ void programa (){
     if (INT == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "A funcao main deve ser do tipo int");
+        errorMessage("A funcao main deve ser do tipo int");
     }
     if (MAIN == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "Nao foi achada uma referencia para main");
+        errorMessage("Nao foi achada uma referencia para main");
     }
     if (ABRE_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "esperado '('");
+        errorMessage("esperado '('");
     }
     if (FECHA_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "esperado ')'");
+        errorMessage("esperado ')'");
     }
 
     bloco();
     
     if (END_OF_FILE != token.symbol) {
-        errorMessage(token, "");
+        errorMessage("");
     }
 }
 
@@ -57,7 +57,7 @@ void bloco(){
     if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "esperado '{'");
+        errorMessage("esperado '{'");
     }
     
     
@@ -68,10 +68,8 @@ void bloco(){
     if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage(token, "esperado '}'");
+        errorMessage("esperado '}'");
     }
-    
-   // token = _SCAN();
 }
 
 void mult_variables(){
@@ -90,15 +88,15 @@ void mult_variables(){
                         token = _SCAN();
                         break;
                     } else {
-                        errorMessage(token, "esperado ';' no final da declaracao");
+                        errorMessage("esperado ';' no final da declaracao");
                     }
                 } else {
-                    errorMessage(token, "esperado identificador");
+                    errorMessage("esperado identificador");
                 }
             }
         }
     } else {
-        errorMessage(token, "esperado identificador");
+        errorMessage("esperado identificador");
     }
 }
 
@@ -131,7 +129,18 @@ void decl_var(){
     } while (UNKNOW_TYPE != tipo);
 }
 
+void expr_arit(){
+    
+}
+
 void atribuicao(){
+    if (ID == token.symbol) {
+        token = _SCAN();
+        if (IGUAL_ATRIBUICAO == token.symbol) {
+            token = _SCAN();
+            expr_arit();
+        }
+    }
     
 }
 
@@ -139,10 +148,62 @@ void comando_basico(){
     atribuicao();
 }
 
+void expr_relacional(){
+    
+}
+
+void iteracao(){
+    switch (token.symbol) {
+        case WHILE:
+            token = _SCAN();
+            if (ABRE_PARENTESES == token.symbol) {
+                token = _SCAN();
+                expr_relacional();
+                if (FECHA_PARENTESES == token.symbol) {
+                    token = _SCAN();
+                    bloco();
+                } else {
+                    errorMessage("esperado '}'");
+                }
+            } else {
+                errorMessage("esperado '{'");
+            }
+            break;
+        case DO:
+            token = _SCAN();
+            bloco();
+            if (WHILE == token.symbol) {
+                token = _SCAN();
+                if (ABRE_PARENTESES == token.symbol) {
+                    token = _SCAN();
+                    expr_relacional();
+                    if (FECHA_PARENTESES == token.symbol) {
+                        token = _SCAN();
+                        if (PONTO_VIRGULA == token.symbol) {
+                            token = _SCAN();
+                        } else {
+                            errorMessage("esperado ';' no final da expressao");
+                        }
+                    } else {
+                        errorMessage("esperado ')'");
+                    }
+                    
+                } else {
+                    errorMessage("esperado '('");
+                }
+            } else {
+                errorMessage("esperado 'while' em do/while loop");
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 void comando(){
     comando_basico();
-    /*iteracao();
-    condicional();   */
+    iteracao();
+    /*condicional();   */
 }
 
 

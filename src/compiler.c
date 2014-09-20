@@ -18,7 +18,9 @@ int main(int argc, char *argv[]){
     //test declaracao variavel
     //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/decl_var.txt";
     //test comando
-    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/comando.txt";
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/comando.txt";
+    //test iteracao
+    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/iteracao.txt";
 
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");
