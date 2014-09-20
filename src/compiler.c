@@ -4,7 +4,7 @@
 #include "messages.h"
 
 int main(int argc, char *argv[]){
-	int statusFile;
+    int statusFile;
 	
     /*
 	if(argc < 2){
@@ -20,8 +20,11 @@ int main(int argc, char *argv[]){
     //test comando
     //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/comando.txt";
     //test iteracao
-    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/iteracao.txt";
-
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/iteracao.txt";
+    //test condicional
+    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/condicional.txt";
+    
+    
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");
 		return ERROR_FILE_NOT_RECOGNIZED;

@@ -23,7 +23,15 @@ void parser(){
      }*/
 }
 
+/**
+ * O main eh o unico nao terminal que chama bloco, e que deve
+ * deve obrigatoriamente ter um abre chaves e fecha chaves.
+ * A variavel verifyBlock
+ *
+ */
 void programa (){
+    int verifyBlock;
+    
     if (INT == token.symbol) {
         token = _SCAN();
     } else {
@@ -45,19 +53,31 @@ void programa (){
         errorMessage("esperado ')'");
     }
 
-    bloco();
+    verifyBlock = bloco();
+    
+    if (-1 == verifyBlock) {
+        errorMessage("esperado '{'");
+    }else if (-2 == verifyBlock){
+        errorMessage("esperado '}'");
+    }
     
     if (END_OF_FILE != token.symbol) {
-        errorMessage("");
+        errorMessage("programa so deve conter a funcao main");
     }
 }
 
-void bloco(){
-    
+
+/**
+ * O retorno da funcao serve apenas para o main.
+ * (no if, while) nao eh obrigatorio ter bloco.
+ * @return -1 se for erro de nao abrir chaves
+ * @return -2 se for erro de nao fechar chaves
+ */
+int bloco(){
     if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage("esperado '{'");
+        return -1;
     }
     
     
@@ -68,8 +88,10 @@ void bloco(){
     if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
     } else {
-        errorMessage("esperado '}'");
+        return -2;
     }
+    
+    return 0;
 }
 
 void mult_variables(){
@@ -94,6 +116,8 @@ void mult_variables(){
                     errorMessage("esperado identificador");
                 }
             }
+        } else {
+            errorMessage("espero ';' no final da declaracao");
         }
     } else {
         errorMessage("esperado identificador");
@@ -146,6 +170,7 @@ void atribuicao(){
 
 void comando_basico(){
     atribuicao();
+    bloco();
 }
 
 void expr_relacional(){
@@ -200,10 +225,34 @@ void iteracao(){
     }
 }
 
+void condicional(){
+    switch (token.symbol) {
+        case IF:
+            token = _SCAN();
+            if (ABRE_PARENTESES == token.symbol) {
+                token = _SCAN();
+                expr_relacional();
+                if (FECHA_PARENTESES == token.symbol) {
+                    token = _SCAN();
+                    comando();
+                } else {
+                    errorMessage("esperado ')'");
+                }
+            } else {
+                errorMessage("esperado '('");
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
 void comando(){
     comando_basico();
     iteracao();
-    /*condicional();   */
+    condicional();
 }
 
 
