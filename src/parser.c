@@ -136,8 +136,16 @@ void decl_var(){
     } while (UNKNOW_TYPE != tipo);
 }
 
-void expr_arit(){
-    
+
+void expressao(){
+    termo();
+    switch (token.symbol) {
+        case SOMA:
+        case SUBTRACAO:
+            token = _SCAN();
+            termo();
+            break;
+    }
 }
 
 void atribuicao(){
@@ -145,10 +153,14 @@ void atribuicao(){
         token = _SCAN();
         if (IGUAL_ATRIBUICAO == token.symbol) {
             token = _SCAN();
-            expr_arit();
+            expressao();
+            if (PONTO_VIRGULA == token.symbol) {
+                token = _SCAN();
+            } else {
+                errorMessage("esperado `;'");
+            }
         }
-    }
-    
+    }    
 }
 
 void comando_basico(){
@@ -156,8 +168,59 @@ void comando_basico(){
     bloco();
 }
 
+boolean isExpressaoRelacional(){
+    switch (token.symbol) {
+        case MENOR:
+        case MAIOR:
+        case MENOR_IGUAL:
+        case MAIOR_IGUAL:
+        case IGUAL_COMPARACAO:
+        case DIFERENTE_COMPARACAO:
+            return true;
+    }
+    return false;
+}
+
 void expr_relacional(){
-    
+    expressao();
+    if (isExpressaoRelacional()) {
+        token = _SCAN();
+        expressao();
+    } else {
+        errorMessage("esperado uma expressao");
+    }
+}
+
+
+void termo(){
+    fator();
+    switch (token.symbol) {
+        case MULTIPLICACAO:
+        case DIVISAO:
+            token = _SCAN();
+            fator();
+            break;
+    }
+}
+
+void fator(){
+    switch (token.symbol) {
+        case ID:
+            token = _SCAN();
+            break;
+        case INT:
+        case FLOAT:
+        case CHAR:
+            token = _SCAN();
+            break;
+        case ABRE_PARENTESES:
+            token = _SCAN();
+            expressao();
+            if (FECHA_PARENTESES != token.symbol) {
+                errorMessage("esperado `)'");
+            }
+            break;
+    }
 }
 
 void iteracao(){

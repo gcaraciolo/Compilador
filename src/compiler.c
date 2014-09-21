@@ -22,8 +22,11 @@ int main(int argc, char *argv[]){
     //test iteracao
     //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/iteracao.txt";
     //test condicional
-    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/condicional.txt";
-    
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/condicional.txt";
+    //test expressao
+    //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/expressao.txt";
+    //test relacional
+    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/expr_relacional.txt";
     
 	if(!verifyExtension(argv[1])){
 		printf ("Extension not recognized.\n");

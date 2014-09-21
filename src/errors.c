@@ -17,7 +17,7 @@ void errorMessage(const char *message){
     if (strlen(token.lexema) == 0) {
         printf("ERRO na linha %d, coluna %d, nenhum token lido: %s\n", linha, coluna, message);
     }else {
-        printf("ERRO na linha %d, coluna %d, ultimo token lido '%s': %s\n", linha, coluna, token.lexema, message);
+        printf("ERRO na linha %d, coluna %d, ultimo token lido `%s': %s\n", linha, coluna, token.lexema, message);
     }
     exit(1);
 }
