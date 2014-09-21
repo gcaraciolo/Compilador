@@ -1,1 +1,0 @@
-/usr/bin/cc   -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/compiler.dir/src/compiler.c.o CMakeFiles/compiler.dir/src/errors.c.o CMakeFiles/compiler.dir/src/fileActions.c.o CMakeFiles/compiler.dir/src/parser.c.o CMakeFiles/compiler.dir/src/scanner.c.o  -o compiler  

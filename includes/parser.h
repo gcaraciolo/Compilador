@@ -12,20 +12,20 @@
 #include "globals.h"
 
 void parser();
-
-void decl_var();
-int tipo();
-
-void programa();
+void programa ();
 void bloco();
-void comando();
-void comando_basico();
-void condicional(); //if else
-void iteracao();
+void mult_variables();
+int getTipo();
+void decl_var();
+void expressao();
 void atribuicao();
+void comando_basico();
+boolean isExpressaoRelacional();
 void expr_relacional();
-void expr_arit();
 void termo();
 void fator();
+void iteracao();
+void condicional();
+void comando();
 
 #endif
