@@ -1,12 +1,12 @@
 int main(){
-	if()
-    if(){
+    if(a < b)
+    if(a > c){
     
     } else {
     
     }
     /*else {
     } */
-    if(){
+    if(2 + 4 < (1 + 2) * 5){
     }    
 }

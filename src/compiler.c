@@ -6,11 +6,11 @@
 int main(int argc, char *argv[]){
     int statusFile;
 	
-    /*
+    
 	if(argc < 2){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
-	}*/
+	}
 	//test scanner
 	//argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/scanner.txt";
     //test main
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
     //test condicional
     //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/condicional.txt";
     //test expressao
-    argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/expressao.txt";
+   // argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/expressao.txt";
     //test relacional
     //argv[1] = "/Users/gcaraciolo/Documents/Projetos/Compilador/test/parser/expr_relacional.txt";
     

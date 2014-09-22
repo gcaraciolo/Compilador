@@ -192,7 +192,7 @@ __TOKEN _SCAN(){
                     lookahead = readCharacter();
                     token.lexema[pointer++] = lookahead;
                     if (S_ASPAS_SIMPLES == lookahead) {
-                        token.symbol = CHAR;
+                        token.symbol = LETRA;
                         lookahead = readCharacter();
                     } else {
                         token.symbol = ERROR_CHAR_MAL_FORMADO;

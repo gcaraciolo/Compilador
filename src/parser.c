@@ -63,7 +63,9 @@ void bloco(){
     }
     
     decl_var();
-    comando();
+    while (FECHA_CHAVES != token.symbol && END_OF_FILE != token.symbol){ 
+	comando();
+    }
     
     if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
@@ -184,7 +186,7 @@ void expr_relacional(){
         token = _SCAN();
         expressao();
     } else {
-        errorMessage("esperado uma expressao");
+        errorMessage("esperado uma expressao relacional");
     }
 }
 

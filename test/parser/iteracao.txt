@@ -4,5 +4,5 @@ int main(){
     }*/
     do{
     
-    }while();
+    }while(2 * (4+5) != 0);
 }
