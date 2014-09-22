@@ -139,12 +139,9 @@ void decl_var(){
 
 void expressao(){
     termo();
-    switch (token.symbol) {
-        case SOMA:
-        case SUBTRACAO:
-            token = _SCAN();
-            termo();
-            break;
+    while (SOMA == token.symbol || SUBTRACAO == token.symbol) {
+        token = _SCAN();
+        termo();
     }
 }
 
@@ -194,12 +191,9 @@ void expr_relacional(){
 
 void termo(){
     fator();
-    switch (token.symbol) {
-        case MULTIPLICACAO:
-        case DIVISAO:
-            token = _SCAN();
-            fator();
-            break;
+    while (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
+        token = _SCAN();
+        fator();
     }
 }
 
@@ -208,17 +202,20 @@ void fator(){
         case ID:
             token = _SCAN();
             break;
-        case INT:
-        case FLOAT:
-        case CHAR:
+        case DIGITO:
+        case DIGITO_FLUTUANTE:
+        case LETRA:
             token = _SCAN();
             break;
         case ABRE_PARENTESES:
             token = _SCAN();
             expressao();
-            if (FECHA_PARENTESES != token.symbol) {
+            if (FECHA_PARENTESES == token.symbol) {
+                token = _SCAN();
+            } else {
                 errorMessage("esperado `)'");
             }
+            
             break;
     }
 }

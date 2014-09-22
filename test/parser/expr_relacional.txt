@@ -1,5 +1,5 @@
 int main(){
-	if(a + c){
+	if(a + c < d - d){
     }
 
 }
