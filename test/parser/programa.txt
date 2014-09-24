@@ -1,3 +1,4 @@
 int main(){
- 
+if(a + (c * d) < b){
+}
 }

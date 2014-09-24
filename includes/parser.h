@@ -13,7 +13,7 @@
 
 void parser();
 void programa ();
-void bloco();
+void bloco(boolean);
 void mult_variables();
 int getTipo();
 void decl_var();

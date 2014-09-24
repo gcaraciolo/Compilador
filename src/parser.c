@@ -45,38 +45,79 @@ void programa (){
         errorMessage("esperado ')'");
     }
 
-    bloco();
+    bloco(true);
     
     if (END_OF_FILE != token.symbol) {
         errorMessage("programa so deve conter a funcao main");
     }
 }
 
-void bloco(){
-    boolean open, close;
-    open = close = false;
-    if (ABRE_CHAVES == token.symbol) {
+boolean isTerminal(){
+    switch (token.symbol) {
+        case ELSE:
+        case DIGITO:
+        case DIGITO_FLUTUANTE:
+        case LETRA:
+        case ABRE_PARENTESES:
+        case FECHA_PARENTESES:
+        case PONTO_VIRGULA:
+        case MAIN:
+        case SOMA:
+        case SUBTRACAO:
+        case DIVISAO:
+        case MULTIPLICACAO:
+        case MENOR:
+        case MAIOR:
+        case MENOR_IGUAL:
+        case MAIOR_IGUAL:
+        case IGUAL_COMPARACAO:
+        case DIFERENTE_COMPARACAO:
+        case END_OF_FILE:
+        case FECHA_CHAVES:
+            return true;
+            
+    }
+    return false;
+}
+
+void bloco(boolean required){
+    boolean open, closed;
+    open = closed = false;
+    if (required) {
+        if (ABRE_CHAVES == token.symbol) {
+            token = _SCAN();
+        } else {
+            errorMessage("esperado '{'");
+        }
+    } else if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
         open = true;
     } else {
-        return; //se nao tiver esse return bloco vira uma chamada recursiva indireta com a funcao comando basico
+        return;
     }
+    
     
     decl_var();
-    while (FECHA_CHAVES != token.symbol && END_OF_FILE != token.symbol){ 
-	comando();
+    while (!isTerminal()){
+        comando();
     }
     
-    if (FECHA_CHAVES == token.symbol) {
+    if (required) {
+        if (FECHA_CHAVES == token.symbol) {
+            token = _SCAN();
+        } else {
+            errorMessage("esperado '}'");
+        }
+    } else if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
-        close = true;
+        closed = true;
     }
     
-    if (open && !close) {
+    if(open && !closed){
         errorMessage("esperado '}'");
-    }else if (!open && close){
-        errorMessage("esperado '{'");
     }
+    
+    
 }
 
 void mult_variables(){
@@ -164,7 +205,7 @@ void atribuicao(){
 
 void comando_basico(){
     atribuicao();
-    bloco();
+    bloco(false);
 }
 
 boolean isExpressaoRelacional(){
@@ -219,6 +260,8 @@ void fator(){
             }
             
             break;
+        default:
+            errorMessage("esperado um identificador");
     }
 }
 
@@ -231,17 +274,17 @@ void iteracao(){
                 expr_relacional();
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
-                    bloco();
+                    comando();
                 } else {
-                    errorMessage("esperado '}'");
+                    errorMessage("esperado ')'");
                 }
             } else {
-                errorMessage("esperado '{'");
+                errorMessage("esperado '('");
             }
             break;
         case DO:
             token = _SCAN();
-            bloco();
+            comando();
             if (WHILE == token.symbol) {
                 token = _SCAN();
                 if (ABRE_PARENTESES == token.symbol) {
