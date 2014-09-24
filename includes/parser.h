@@ -11,21 +11,21 @@
 
 #include "globals.h"
 
-void parser();
-void programa ();
-void bloco(boolean);
-void mult_variables();
+boolean parser();
+boolean programa ();
+boolean bloco(boolean);
+boolean mult_variables();
 int getTipo();
-void decl_var();
-void expressao();
-void atribuicao();
-void comando_basico();
+boolean decl_var();
+boolean expressao();
+boolean atribuicao();
+boolean comando_basico();
 boolean isExpressaoRelacional();
-void expr_relacional();
-void termo();
-void fator();
-void iteracao();
-void condicional();
-void comando();
+boolean expr_relacional();
+boolean termo();
+boolean fator();
+boolean iteracao();
+boolean condicional();
+boolean comando();
 
 #endif

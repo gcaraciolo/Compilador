@@ -7,8 +7,10 @@
 #include "symbols.h"
 #include "errors.h"
 
-void parser(){
+boolean parser(){
+    boolean executed = false;
     token = _SCAN();
+    executed = true;
     programa();
     
     
@@ -21,11 +23,14 @@ void parser(){
      }
      // printToken(token);
      }*/
+    return executed;
 }
 
-void programa (){
+boolean programa (){
+    boolean executed = false, requiredChaves = true;
     if (INT == token.symbol) {
         token = _SCAN();
+        executed = true;
     } else {
         errorMessage("A funcao main deve ser do tipo int");
     }
@@ -45,11 +50,13 @@ void programa (){
         errorMessage("esperado ')'");
     }
 
-    bloco(true);
+    bloco(requiredChaves);
     
     if (END_OF_FILE != token.symbol) {
         errorMessage("programa so deve conter a funcao main");
     }
+    
+    return executed;
 }
 
 boolean isTerminal(){
@@ -80,7 +87,7 @@ boolean isTerminal(){
     return false;
 }
 
-void bloco(boolean required){
+boolean bloco(boolean required){
     boolean open, closed;
     open = closed = false;
     if (required) {
@@ -93,7 +100,7 @@ void bloco(boolean required){
         token = _SCAN();
         open = true;
     } else {
-        return;
+        return false;
     }
     
     
@@ -116,13 +123,14 @@ void bloco(boolean required){
     if(open && !closed){
         errorMessage("esperado '}'");
     }
-    
-    
+    return true;
 }
 
-void mult_variables(){
+boolean mult_variables(){
+    boolean executed = false;
     if (ID == token.symbol) {
         token = _SCAN();
+        executed = true;
         if (PONTO_VIRGULA == token.symbol) {
             token = _SCAN();
         } else if (VIRGULA == token.symbol) {
@@ -148,6 +156,7 @@ void mult_variables(){
     } else {
         errorMessage("esperado identificador");
     }
+    return executed;
 }
 
 int getTipo(){
@@ -162,8 +171,9 @@ int getTipo(){
     return UNKNOW_TYPE;
 }
 
-void decl_var(){
+boolean decl_var(){
     int tipo;
+    boolean executed = false;
     do {
         tipo = getTipo();
         switch (tipo) {
@@ -171,26 +181,33 @@ void decl_var(){
             case CHAR:
             case FLOAT:
                 token = _SCAN();
+                executed = true;
                 mult_variables();
                 break;
             default:
                 break;
         }
     } while (UNKNOW_TYPE != tipo);
+    return executed;
 }
 
 
-void expressao(){
+boolean expressao(){
+    boolean executed = false;
     termo();
     while (SOMA == token.symbol || SUBTRACAO == token.symbol) {
         token = _SCAN();
+        executed = true;
         termo();
     }
+    return executed;
 }
 
-void atribuicao(){
+boolean atribuicao(){
+    boolean executed = false;
     if (ID == token.symbol) {
         token = _SCAN();
+        executed = true;
         if (IGUAL_ATRIBUICAO == token.symbol) {
             token = _SCAN();
             expressao();
@@ -200,12 +217,17 @@ void atribuicao(){
                 errorMessage("esperado `;'");
             }
         }
-    }    
+    }
+    return executed;
 }
 
-void comando_basico(){
-    atribuicao();
-    bloco(false);
+boolean comando_basico(){
+    boolean executed = false, requiredChaves = false;
+    executed = atribuicao();
+    if (!executed) {
+        executed = bloco(requiredChaves);
+    }
+    return executed;
 }
 
 boolean isExpressaoRelacional(){
@@ -221,54 +243,66 @@ boolean isExpressaoRelacional(){
     return false;
 }
 
-void expr_relacional(){
-    expressao();
+boolean expr_relacional(){
+    boolean executed = false;
+    executed = expressao();
     if (isExpressaoRelacional()) {
         token = _SCAN();
+        executed = true;
         expressao();
     } else {
         errorMessage("esperado uma expressao relacional");
     }
+    return executed;
 }
 
 
-void termo(){
-    fator();
+boolean termo(){
+    boolean executed = false;
+    executed = fator();
     while (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
         token = _SCAN();
+        executed = true;
         fator();
     }
+    return executed;
 }
 
-void fator(){
+boolean fator(){
+    boolean executed = false;
     switch (token.symbol) {
         case ID:
             token = _SCAN();
+            executed = true;
             break;
         case DIGITO:
         case DIGITO_FLUTUANTE:
         case LETRA:
             token = _SCAN();
+            executed = true;
             break;
         case ABRE_PARENTESES:
             token = _SCAN();
+            executed = true;
             expressao();
             if (FECHA_PARENTESES == token.symbol) {
                 token = _SCAN();
             } else {
                 errorMessage("esperado `)'");
             }
-            
             break;
         default:
             errorMessage("esperado um identificador");
     }
+    return executed;
 }
 
-void iteracao(){
+boolean iteracao(){
+    boolean executed = false;
     switch (token.symbol) {
         case WHILE:
             token = _SCAN();
+            executed = true;
             if (ABRE_PARENTESES == token.symbol) {
                 token = _SCAN();
                 expr_relacional();
@@ -284,6 +318,7 @@ void iteracao(){
             break;
         case DO:
             token = _SCAN();
+            executed = true;
             comando();
             if (WHILE == token.symbol) {
                 token = _SCAN();
@@ -308,15 +343,16 @@ void iteracao(){
                 errorMessage("esperado 'while' em do/while loop");
             }
             break;
-        default:
-            break;
     }
+    return executed;
 }
 
-void condicional(){
+boolean condicional(){
+    boolean executed = false;
     switch (token.symbol) {
         case IF:
             token = _SCAN();
+            executed = true;
             if (ABRE_PARENTESES == token.symbol) {
                 token = _SCAN();
                 expr_relacional();
@@ -334,17 +370,20 @@ void condicional(){
                 errorMessage("esperado '('");
             }
             break;
-            
-        default:
-            break;
     }
-    
+    return false;
 }
 
-void comando(){
-    comando_basico();
-    iteracao();
-    condicional();
+boolean comando(){
+    boolean executed = false;
+    executed = comando_basico();
+    if(!executed){
+        executed = iteracao();
+    }
+    if (!executed) {
+        executed = condicional();
+    }
+    return executed;
 }
 
 
