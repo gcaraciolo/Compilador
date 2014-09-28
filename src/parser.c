@@ -59,30 +59,14 @@ boolean programa (){
     return executed;
 }
 
-boolean isTerminal(){
+boolean isCommandFirst(){
     switch (token.symbol) {
-        case ELSE:
-        case DIGITO:
-        case DIGITO_FLUTUANTE:
-        case LETRA:
-        case ABRE_PARENTESES:
-        case FECHA_PARENTESES:
-        case PONTO_VIRGULA:
-        case MAIN:
-        case SOMA:
-        case SUBTRACAO:
-        case DIVISAO:
-        case MULTIPLICACAO:
-        case MENOR:
-        case MAIOR:
-        case MENOR_IGUAL:
-        case MAIOR_IGUAL:
-        case IGUAL_COMPARACAO:
-        case DIFERENTE_COMPARACAO:
-        case END_OF_FILE:
-        case FECHA_CHAVES:
+        case ID:
+        case ABRE_CHAVES:
+        case WHILE:
+        case DO:
+        case IF:
             return true;
-            
     }
     return false;
 }
@@ -105,7 +89,7 @@ boolean bloco(boolean required){
     
     
     decl_var();
-    while (!isTerminal()){
+    while (isCommandFirst()){
         comando();
     }
     
