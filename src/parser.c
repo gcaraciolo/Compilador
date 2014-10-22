@@ -292,7 +292,9 @@ boolean iteracao(){
                 expr_relacional();
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
-                    comando();
+                    if(!comando()){
+			errorMessage("esperado um comando");	
+		    }
                 } else {
                     errorMessage("esperado ')'");
                 }
@@ -303,7 +305,9 @@ boolean iteracao(){
         case DO:
             token = _SCAN();
             executed = true;
-            comando();
+            if(!comando()){
+		errorMessage("esperado um comando");
+	    }
             if (WHILE == token.symbol) {
                 token = _SCAN();
                 if (ABRE_PARENTESES == token.symbol) {
@@ -342,7 +346,9 @@ boolean condicional(){
                 expr_relacional();
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
-                    comando();
+                    if (!comando()){
+			errorMessage("esperado um comando");	
+		    }
                     if (ELSE == token.symbol) {
                         token = _SCAN();
                         comando();
