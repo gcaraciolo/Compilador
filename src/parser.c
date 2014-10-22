@@ -176,15 +176,21 @@ boolean decl_var(){
 }
 
 
-boolean expressao(){
+boolean expressao_linha(){
     boolean executed = false;
-    termo();
-    while (SOMA == token.symbol || SUBTRACAO == token.symbol) {
-        token = _SCAN();
-        executed = true;
-        termo();
+    if(SOMA == token.symbol || SUBTRACAO == token.symbol){
+	token = _SCAN();
+	executed = true;
+	termo();
+	expressao_linha();	
     }
     return executed;
+}
+
+
+boolean expressao(){
+    termo();
+    expressao_linha();
 }
 
 boolean atribuicao(){
@@ -240,16 +246,20 @@ boolean expr_relacional(){
     return executed;
 }
 
+boolean termo_linha(){
+   boolean executed = false;
+   if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol){
+	token = _SCAN();
+	executed = true;
+	fator();
+   	termo_linha();
+   }
+   return executed;
+}
 
 boolean termo(){
-    boolean executed = false;
-    executed = fator();
-    while (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
-        token = _SCAN();
-        executed = true;
-        fator();
-    }
-    return executed;
+    fator(); 
+    termo_linha();
 }
 
 boolean fator(){

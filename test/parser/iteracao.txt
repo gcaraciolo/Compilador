@@ -1,8 +1,6 @@
 int main(){
-	/*while(){
+    while(2 < 3)
+    	
     
-    }*/
-    do{
     
-    }while(2 * (4+5) != 0);
 }
