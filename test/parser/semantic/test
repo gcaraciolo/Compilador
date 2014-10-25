@@ -12,6 +12,7 @@ int main(){
 		int idade, cont;
 		char casa;
 		float pi, pa;
+		char casa;
 
 		idade = 10;
 		cont = 2;

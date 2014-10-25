@@ -40,8 +40,9 @@ void programa (){
     } else {
         errorMessage("esperado ')'");
     }
-
+    symbols_table = stack_create();
     bloco(requiredChaves);
+    stack_free(&symbols_table);
     
     if (END_OF_FILE != token.symbol) {
         errorMessage("programa so deve conter a funcao main");
@@ -63,7 +64,6 @@ boolean isCommandFirst(){
 
 boolean bloco(boolean required){
     boolean open, closed;
-    __STACK * table = stack_create();
     scope++;
     
     open = closed = false;
@@ -82,7 +82,7 @@ boolean bloco(boolean required){
     }
     
     
-    decl_var(&table);
+    decl_var(&symbols_table);
     while (isCommandFirst()){
         comando();
     }
@@ -102,7 +102,7 @@ boolean bloco(boolean required){
         errorMessage("esperado '}'");
     }
     
-    stack_free(&table);
+    stack_free_scope(&symbols_table, scope);
     scope--;
     
     return true;
@@ -110,9 +110,18 @@ boolean bloco(boolean required){
 
 boolean mult_variables(__STACK ** table, int type){
     boolean executed = false;
+    char msg[MAX_CHARACTER + 100];
     
     if (ID == token.symbol) {
-        stack_push(*table, token, type, scope);
+        if (!stack_consult_scope(*table, scope, token)) {
+            stack_push(*table, token, type, scope);
+        } else {
+            strcpy(msg, "multiplas definicoes para \'");
+            strcat(msg, token.lexema);
+            strcat(msg, "\'");
+            errorMessage(msg);
+        }
+
         token = _SCAN();
         executed = true;
         if (PONTO_VIRGULA == token.symbol) {

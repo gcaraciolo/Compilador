@@ -52,7 +52,7 @@ void stack_node_free(__TOKEN ** token){
 void stack_free(__STACK ** stack){
     __LIST * die;
     
-    while((*stack)->top){
+    while(*stack && (*stack)->top){
         die             =   (*stack)->top;
         (*stack)->top   =   die->ant;
         stack_node_free(&die->token);
@@ -60,6 +60,19 @@ void stack_free(__STACK ** stack){
     }
     
     free(*stack);
+    *stack = NULL;
+    stack = NULL;
+}
+
+void stack_free_scope(__STACK ** stack, int scope){
+    __LIST * die;
+    
+    while((*stack)->top && (*stack)->top->scope == scope){
+        die             =   (*stack)->top;
+        (*stack)->top   =   die->ant;
+        stack_node_free(&die->token);
+        free(die);
+    }
 }
 
 __TOKEN * stack_alloc_token(__TOKEN token){
@@ -81,29 +94,33 @@ __TOKEN * stack_consult_top(__STACK * stack){
     return value->token;
 }
 
-/*
 
-__TOKEN * stack_consult_scope(__STACK * stack, int scope){
-    __LIST * value;
+
+boolean stack_consult_scope(__STACK * stack, int scope, __TOKEN token){
+    __LIST * value = stack->top;
     
-    if(stack->top){
-        value = stack->top;
+    while (value && value->scope == scope) {
+        if (token.symbol == value->token->symbol && strcmp(token.lexema, value->token->lexema) == 0) {
+            return true;
+        }
+        value = value->ant;
     }
-    
-    return value->token;
+    return false;
 }
 
 
 
-__TOKEN * stack_consult_all(__STACK * stack){
-    __LIST * value;
+boolean stack_consult_all(__STACK * stack, __TOKEN token){
+    __LIST * value = stack->top;
     
-    if(stack->top){
-        value = stack->top;
+    while (value) {
+        if (token.symbol == value->token->symbol && strcmp(token.lexema, value->token->lexema) == 0) {
+            return true;
+        }
+        value = value->ant;
     }
-    
-    return value->token;
-}*/
+    return false;
+}
 
 
 
