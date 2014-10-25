@@ -6,7 +6,7 @@ int main(){
 	idade = 5;
 	cont = 1;
 	casa = 'a';
-	float = 0.5;
+	pi = 0.5;
 
 	do{
 		int idade, cont;

@@ -56,7 +56,7 @@ boolean stack_isEmpty(__STACK * stack){
 void stack_node_free(__TOKEN ** token){
     
     free(* token);
-    free(token);
+    *token = NULL;
 }
 
 void stack_free(__STACK ** stack){

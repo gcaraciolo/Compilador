@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 		return ERROR_PARAMETERS_NOT_PASSED;
 	}*/
     
-    argv[1] = "/Users/gcaraciolo/Documents/Compilador/test/parser/programa";
+    argv[1] = "/Users/gcaraciolo/Documents/Compilador/test/parser/semantic/test";
     
 	statusFile = openFile(argv[1]);
 	if(ERROR_COULD_NOT_OPEN_FILE == statusFile){
