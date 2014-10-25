@@ -37,7 +37,7 @@ struct __LIST {
 };
 
 struct __STACK {
-    __LIST * topo;
+    __LIST * top;
 };
 
 

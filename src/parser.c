@@ -10,7 +10,7 @@
 
 void parser(){
     token = _SCAN();
-    scope = 0;
+    scope = -1;
     programa();
 }
 
@@ -77,6 +77,7 @@ boolean bloco(boolean required){
         token = _SCAN();
         open = true;
     } else {
+        scope--;
         return false;
     }
     
@@ -111,8 +112,8 @@ boolean mult_variables(__STACK ** table, int type){
     boolean executed = false;
     
     if (ID == token.symbol) {
-        token = _SCAN();
         stack_push(*table, token, type, scope);
+        token = _SCAN();
         executed = true;
         if (PONTO_VIRGULA == token.symbol) {
             token = _SCAN();
@@ -120,8 +121,8 @@ boolean mult_variables(__STACK ** table, int type){
             token = _SCAN();
             while (true) {
                 if (ID == token.symbol) {
-                    token = _SCAN();
                     stack_push(*table, token, type, scope);
+                    token = _SCAN();
                     if (VIRGULA == token.symbol) {
                         token = _SCAN();
                     } else if (PONTO_VIRGULA == token.symbol) {

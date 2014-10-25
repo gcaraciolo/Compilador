@@ -6,7 +6,7 @@
 __STACK * stack_create(){
     __STACK * stack = (__STACK*) malloc(sizeof(__STACK));
     
-    stack->topo = NULL;
+    stack->top = NULL;
     
     return stack;
 }
@@ -17,8 +17,8 @@ void stack_push(__STACK * stack, __TOKEN token, int type, int scope){
     _new->token     =   stack_alloc_token(token);
     _new->type      =   type;
     _new->scope     =   scope;
-    _new->ant       =   stack->topo;
-    stack->topo     =   _new;
+    _new->ant       =   stack->top;
+    stack->top     =   _new;
     
 }
 
@@ -26,31 +26,21 @@ __TOKEN * stack_pop(__STACK * stack){
     __TOKEN *token;
     __LIST *die = NULL;
     
-    if(!stack->topo){
+    if(!stack->top){
         token = NULL;
     }else{
-        die             =   stack->topo;
+        die             =   stack->top;
         token           =   die->token;
-        stack->topo     =   die->ant;
+        stack->top     =   die->ant;
         free(die);
     }
     
     return token;
 }
 
-__TOKEN * stack_consult(__STACK * stack){
-    __LIST * value;
-    
-    if(stack->topo){
-        value = stack->topo;
-    }
-    
-    return value->token;
-}
-
 boolean stack_isEmpty(__STACK * stack){
     
-    return stack->topo ? true : false;
+    return stack->top ? true : false;
 }
 
 void stack_node_free(__TOKEN ** token){
@@ -62,11 +52,11 @@ void stack_node_free(__TOKEN ** token){
 void stack_free(__STACK ** stack){
     __LIST * die;
     
-    while((*stack)->topo){
-        die             =   (*stack)->topo;
-        (*stack)->topo  =   die->ant;
+    while((*stack)->top){
+        die             =   (*stack)->top;
+        (*stack)->top   =   die->ant;
         stack_node_free(&die->token);
-        free(die);	
+        free(die);
     }
     
     free(*stack);
@@ -80,3 +70,50 @@ __TOKEN * stack_alloc_token(__TOKEN token){
     
     return point_token;
 }
+
+__TOKEN * stack_consult_top(__STACK * stack){
+    __LIST * value;
+    
+    if(stack->top){
+        value = stack->top;
+    }
+    
+    return value->token;
+}
+
+/*
+
+__TOKEN * stack_consult_scope(__STACK * stack, int scope){
+    __LIST * value;
+    
+    if(stack->top){
+        value = stack->top;
+    }
+    
+    return value->token;
+}
+
+
+
+__TOKEN * stack_consult_all(__STACK * stack){
+    __LIST * value;
+    
+    if(stack->top){
+        value = stack->top;
+    }
+    
+    return value->token;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
