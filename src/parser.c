@@ -6,44 +6,35 @@
 #include "scanner.h"
 #include "symbols.h"
 #include "errors.h"
+#include "stack.h"
 
-boolean parser(){
-    boolean executed = false;
+void parser(){
     token = _SCAN();
-    executed = true;
+    scope = 0;
     programa();
-    
-    
-    /*
-     while(true){
-     token = _SCAN();
-     if(END_OF_FILE == token.symbol){
-     // printf("Build succeeded.\n");
-     break;
-     }
-     // printToken(token);
-     }*/
-    return executed;
 }
 
-boolean programa (){
-    boolean executed = false, requiredChaves = true;
+void programa (){
+    boolean requiredChaves = true;
+    
     if (INT == token.symbol) {
         token = _SCAN();
-        executed = true;
     } else {
         errorMessage("A funcao main deve ser do tipo int");
     }
+    
     if (MAIN == token.symbol) {
         token = _SCAN();
     } else {
         errorMessage("Nao foi achada uma referencia para main");
     }
+    
     if (ABRE_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
         errorMessage("esperado '('");
     }
+    
     if (FECHA_PARENTESES == token.symbol) {
         token = _SCAN();
     } else {
@@ -56,7 +47,6 @@ boolean programa (){
         errorMessage("programa so deve conter a funcao main");
     }
     
-    return executed;
 }
 
 boolean isCommandFirst(){
@@ -73,6 +63,9 @@ boolean isCommandFirst(){
 
 boolean bloco(boolean required){
     boolean open, closed;
+    __STACK * table = stack_create();
+    scope++;
+    
     open = closed = false;
     if (required) {
         if (ABRE_CHAVES == token.symbol) {
@@ -88,7 +81,7 @@ boolean bloco(boolean required){
     }
     
     
-    decl_var();
+    decl_var(&table);
     while (isCommandFirst()){
         comando();
     }
@@ -107,13 +100,19 @@ boolean bloco(boolean required){
     if(open && !closed){
         errorMessage("esperado '}'");
     }
+    
+    stack_free(&table);
+    scope--;
+    
     return true;
 }
 
-boolean mult_variables(){
+boolean mult_variables(__STACK ** table, int type){
     boolean executed = false;
+    
     if (ID == token.symbol) {
         token = _SCAN();
+        stack_push(*table, token, type, scope);
         executed = true;
         if (PONTO_VIRGULA == token.symbol) {
             token = _SCAN();
@@ -122,6 +121,7 @@ boolean mult_variables(){
             while (true) {
                 if (ID == token.symbol) {
                     token = _SCAN();
+                    stack_push(*table, token, type, scope);
                     if (VIRGULA == token.symbol) {
                         token = _SCAN();
                     } else if (PONTO_VIRGULA == token.symbol) {
@@ -140,10 +140,11 @@ boolean mult_variables(){
     } else {
         errorMessage("esperado identificador");
     }
+    
     return executed;
 }
 
-int getTipo(){
+int getType(){
     switch (token.symbol) {
         case INT:
             return INT;
@@ -155,23 +156,21 @@ int getTipo(){
     return UNKNOW_TYPE;
 }
 
-boolean decl_var(){
-    int tipo;
+boolean decl_var(__STACK ** table){
+    int type;
     boolean executed = false;
+    
     do {
-        tipo = getTipo();
-        switch (tipo) {
-            case INT:
-            case CHAR:
-            case FLOAT:
-                token = _SCAN();
-                executed = true;
-                mult_variables();
-                break;
-            default:
-                break;
+        type = getType();
+        
+        if (UNKNOW_TYPE != type) {
+            token = _SCAN();
+            executed = true;
+            mult_variables(table, type);
         }
-    } while (UNKNOW_TYPE != tipo);
+        
+    } while (UNKNOW_TYPE != type);
+    
     return executed;
 }
 
@@ -179,10 +178,10 @@ boolean decl_var(){
 boolean expressao_linha(){
     boolean executed = false;
     if(SOMA == token.symbol || SUBTRACAO == token.symbol){
-	token = _SCAN();
-	executed = true;
-	termo();
-	expressao_linha();	
+        token = _SCAN();
+        executed = true;
+        termo();
+        expressao_linha();
     }
     return executed;
 }
@@ -191,6 +190,7 @@ boolean expressao_linha(){
 boolean expressao(){
     termo();
     expressao_linha();
+    return true;
 }
 
 boolean atribuicao(){
@@ -260,6 +260,7 @@ boolean termo_linha(){
 boolean termo(){
     fator(); 
     termo_linha();
+    return true;
 }
 
 boolean fator(){

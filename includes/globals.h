@@ -19,12 +19,30 @@ FILE *file;
 
 #define MAX_CHARACTER 257
 
-typedef struct __TOKEN{
+typedef struct __TOKEN __TOKEN;
+typedef struct __LIST __LIST;
+typedef struct __STACK __STACK;
+
+
+struct __TOKEN{
     char lexema[MAX_CHARACTER];
     int symbol;
-}__TOKEN;
+};
+
+struct __LIST {
+    struct __LIST * ant;
+    struct __TOKEN * token;
+    int type;
+    int scope; //scope of entire block
+};
+
+struct __STACK {
+    __LIST * topo;
+};
+
 
 int linha, coluna;
 __TOKEN token;
+int scope; // scope of blocks
 
 #endif

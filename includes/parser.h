@@ -11,12 +11,12 @@
 
 #include "globals.h"
 
-boolean parser();
-boolean programa ();
+void parser();
+void programa ();
 boolean bloco(boolean);
-boolean mult_variables();
-int getTipo();
-boolean decl_var();
+boolean mult_variables(__STACK **, int);
+int getType();
+boolean decl_var(__STACK ** );
 boolean expressao();
 boolean atribuicao();
 boolean comando_basico();

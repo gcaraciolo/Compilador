@@ -1,0 +1,36 @@
+int main(){
+	int idade, cont;
+	char casa;
+	float pi;
+
+	idade = 5;
+	cont = 1;
+	casa = 'a';
+	float = 0.5;
+
+	do{
+		int idade, cont;
+		char casa;
+		float pi, pa;
+
+		idade = 10;
+		cont = 2;
+		casa = 'b';
+
+		pi = 1.0;
+		pa = 1.0;
+		
+		
+		while(a < b){
+			int idade, cont;
+			char casa;
+			
+			idade = 15;
+			cont = 3;
+			casa = 'c';	
+		}
+
+	}while(a < b);
+
+
+}
