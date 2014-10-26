@@ -28,17 +28,18 @@ void iteracao();
 void condicional();
 void comando();
 boolean isExpressaoRelacional();
-boolean isCommandFirst();
 int getType();
+boolean isFirstBasicCommand();
 boolean isFirstDeclaration();
 boolean isExpressaoRelacional();
-boolean isCommandFirst();
+boolean isFirstCommand();
 boolean isOparitimetico();
 boolean isFirstBlock();
 boolean isFirstAssing();
 boolean isFirstInteration();
-void checkSemantic(__TOKEN, __TOKEN );
-__TOKEN majorType(__TOKEN , __TOKEN );
+boolean isFirstConditional();
+void checkSemantic(__SEMANTIC, __SEMANTIC );
+__SEMANTIC majorType(__SEMANTIC , __SEMANTIC );
 
 
 #endif

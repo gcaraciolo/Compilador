@@ -60,7 +60,7 @@ void bloco() {
 	}
 
 	decl_var(&symbols_table);
-	while (isCommandFirst()) {
+	while (isFirstCommand()) {
 		comando();
 	}
 
@@ -242,7 +242,7 @@ void iteracao() {
 			expr_relacional();
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
-				if (isCommandFirst()) {
+				if (isFirstCommand()) {
 					comando();
 				} else {
 					errorMessage("esperado um comando");
@@ -256,7 +256,7 @@ void iteracao() {
 		break;
 	case DO:
 		token = _SCAN();
-		if (isCommandFirst()) {
+		if (isFirstCommand()) {
 			comando();
 		} else {
 			errorMessage("esperado um comando");
@@ -296,14 +296,14 @@ void condicional() {
 			expr_relacional();
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
-				if (isCommandFirst()) {
+				if (isFirstCommand()) {
 					comando();
 				} else {
 					errorMessage("esperado um comando");
 				}
 				if (ELSE == token.symbol) {
 					token = _SCAN();
-					if (isCommandFirst()) {
+					if (isFirstCommand()) {
 						comando();
 					} else {
 						errorMessage("esperado um comando");
@@ -320,9 +320,13 @@ void condicional() {
 }
 
 void comando() {
-	comando_basico();
-	iteracao();
-	condicional();
+    if (isFirstBasicCommand()) {
+        comando_basico();
+    } else if (isFirstInteration()){
+        iteracao();
+    } else if (isFirstConditional()){
+        condicional();
+    } 
 }
 
 int getType() {
@@ -335,6 +339,15 @@ int getType() {
 		return CHAR;
 	}
 	return UNKNOW_TYPE;
+}
+
+boolean isFirstBasicCommand() {
+    switch (token.symbol) {
+        case ID:
+        case ABRE_CHAVES:
+            return true;
+    }
+    return false;
 }
 
 boolean isFirstDeclaration() {
@@ -360,7 +373,7 @@ boolean isExpressaoRelacional() {
 	return false;
 }
 
-boolean isCommandFirst() {
+boolean isFirstCommand() {
 	switch (token.symbol) {
 	case ID:
 	case ABRE_CHAVES:
@@ -409,9 +422,17 @@ boolean isFirstInteration() {
 	return false;
 }
 
-void checkSemantic(__TOKEN type0, __TOKEN type1) {
-	boolean ok = false;
+boolean isFirstConditional() {
+    switch (token.symbol) {
+        case IF:
+            return true;
+    }
+    return false;
+}
 
+void checkSemantic(__SEMANTIC type0, __SEMANTIC type1) {
+	boolean ok = false;
+    /*
 	if (DIGITO_FLUTUANTE == type0.symbol && DIGITO == type1.symbol) {
 		ok = true;
 	} else if (DIGITO == type0.symbol && DIGITO_FLUTUANTE == type1.symbol) {
@@ -422,11 +443,12 @@ void checkSemantic(__TOKEN type0, __TOKEN type1) {
 
 	if(!ok){
 		errorMessage("tipos incompativeis");
-	}
+	}*/
 }
 
-__TOKEN majorType(__TOKEN type0, __TOKEN type1) {
-	__TOKEN type;
+__SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {
+	__SEMANTIC type;
+    /*
 	if (type0.symbol == type1.symbol) {
 		type = type0;
 	} else if (EMPTY == type0.symbol && EMPTY == type1.symbol) {
@@ -443,7 +465,7 @@ __TOKEN majorType(__TOKEN type0, __TOKEN type1) {
 		} else if (LETRA == type0.symbol && LETRA != type1.symbol) {
 			errorMessage("tipos incompativeis");
 		}
-	}
+	}*/
 	return type;
 }
 
