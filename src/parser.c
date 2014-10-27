@@ -232,6 +232,7 @@ void termo(){
 }
 
 void fator(){
+    __TOKEN lValue = NULL;
     switch (token.symbol) {
         case ID:
             token = _SCAN();
@@ -243,7 +244,7 @@ void fator(){
             break;
         case ABRE_PARENTESES:
             token = _SCAN();
-            expressao();
+            lValue = expressao();
             if (FECHA_PARENTESES == token.symbol) {
                 token = _SCAN();
             } else {
@@ -253,6 +254,7 @@ void fator(){
         default:
             errorMessage("esperado um identificador");
     }
+    return lValue;
 }
 
 void iteracao(){
