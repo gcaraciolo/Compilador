@@ -15,7 +15,6 @@ void parser(){
 }
 
 void programa (){
-    boolean requiredChaves = true;
     
     if (INT == token.symbol) {
         token = _SCAN();
@@ -40,8 +39,9 @@ void programa (){
     } else {
         errorMessage("esperado ')'");
     }
+
     symbols_table = stack_create();
-    bloco(requiredChaves);
+    bloco();
     stack_free(&symbols_table);
     
     if (END_OF_FILE != token.symbol) {
@@ -62,23 +62,13 @@ boolean isCommandFirst(){
     return false;
 }
 
-boolean bloco(boolean required){
-    boolean open, closed;
+void bloco(){
     scope++;
     
-    open = closed = false;
-    if (required) {
-        if (ABRE_CHAVES == token.symbol) {
-            token = _SCAN();
-        } else {
-            errorMessage("esperado '{'");
-        }
-    } else if (ABRE_CHAVES == token.symbol) {
+    if (ABRE_CHAVES == token.symbol) {
         token = _SCAN();
-        open = true;
     } else {
-        scope--;
-        return false;
+        errorMessage("esperado '{'");
     }
     
     
@@ -87,29 +77,18 @@ boolean bloco(boolean required){
         comando();
     }
     
-    if (required) {
-        if (FECHA_CHAVES == token.symbol) {
-            token = _SCAN();
-        } else {
-            errorMessage("esperado '}'");
-        }
-    } else if (FECHA_CHAVES == token.symbol) {
+    if (FECHA_CHAVES == token.symbol) {
         token = _SCAN();
-        closed = true;
-    }
-    
-    if(open && !closed){
+    } else {
         errorMessage("esperado '}'");
     }
     
     stack_free_scope(&symbols_table, scope);
     scope--;
     
-    return true;
 }
 
-boolean mult_variables(__STACK ** table, int type){
-    boolean executed = false;
+void mult_variables(__STACK ** table, int type){
     char msg[MAX_CHARACTER + 100];
     
     if (ID == token.symbol) {
@@ -123,7 +102,6 @@ boolean mult_variables(__STACK ** table, int type){
         }
 
         token = _SCAN();
-        executed = true;
         if (PONTO_VIRGULA == token.symbol) {
             token = _SCAN();
         } else if (VIRGULA == token.symbol) {
@@ -150,8 +128,6 @@ boolean mult_variables(__STACK ** table, int type){
     } else {
         errorMessage("esperado identificador");
     }
-    
-    return executed;
 }
 
 int getType(){
@@ -166,48 +142,39 @@ int getType(){
     return UNKNOW_TYPE;
 }
 
-boolean decl_var(__STACK ** table){
+void decl_var(__STACK ** table){
     int type;
-    boolean executed = false;
     
     do {
         type = getType();
         
         if (UNKNOW_TYPE != type) {
             token = _SCAN();
-            executed = true;
             mult_variables(table, type);
         }
         
     } while (UNKNOW_TYPE != type);
     
-    return executed;
 }
 
 
-boolean expressao_linha(){
-    boolean executed = false;
+void expressao_linha(){
     if(SOMA == token.symbol || SUBTRACAO == token.symbol){
         token = _SCAN();
-        executed = true;
         termo();
         expressao_linha();
     }
-    return executed;
 }
 
 
-boolean expressao(){
+void expressao(){
     termo();
     expressao_linha();
-    return true;
 }
 
-boolean atribuicao(){
-    boolean executed = false;
+void atribuicao(){
     if (ID == token.symbol) {
         token = _SCAN();
-        executed = true;
         if (IGUAL_ATRIBUICAO == token.symbol) {
             token = _SCAN();
             expressao();
@@ -218,16 +185,14 @@ boolean atribuicao(){
             }
         }
     }
-    return executed;
 }
 
-boolean comando_basico(){
-    boolean executed = false, requiredChaves = false;
-    executed = atribuicao();
-    if (!executed) {
-        executed = bloco(requiredChaves);
+void comando_basico(){
+    if (ID == token.symbol){
+        atribuicao();
+    } else if (ABRE_CHAVES == token.symbol){
+        bloco();
     }
-    return executed;
 }
 
 boolean isExpressaoRelacional(){
@@ -243,52 +208,41 @@ boolean isExpressaoRelacional(){
     return false;
 }
 
-boolean expr_relacional(){
-    boolean executed = false;
-    executed = expressao();
+void expr_relacional(){
+     expressao();
     if (isExpressaoRelacional()) {
         token = _SCAN();
-        executed = true;
         expressao();
     } else {
         errorMessage("esperado uma expressao relacional");
     }
-    return executed;
 }
 
-boolean termo_linha(){
-   boolean executed = false;
+void termo_linha(){
    if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol){
 	token = _SCAN();
-	executed = true;
 	fator();
    	termo_linha();
    }
-   return executed;
 }
 
-boolean termo(){
+void termo(){
     fator(); 
     termo_linha();
-    return true;
 }
 
-boolean fator(){
-    boolean executed = false;
+void fator(){
     switch (token.symbol) {
         case ID:
             token = _SCAN();
-            executed = true;
             break;
         case DIGITO:
         case DIGITO_FLUTUANTE:
         case LETRA:
             token = _SCAN();
-            executed = true;
             break;
         case ABRE_PARENTESES:
             token = _SCAN();
-            executed = true;
             expressao();
             if (FECHA_PARENTESES == token.symbol) {
                 token = _SCAN();
@@ -299,22 +253,21 @@ boolean fator(){
         default:
             errorMessage("esperado um identificador");
     }
-    return executed;
 }
 
-boolean iteracao(){
-    boolean executed = false;
+void iteracao(){
     switch (token.symbol) {
         case WHILE:
             token = _SCAN();
-            executed = true;
             if (ABRE_PARENTESES == token.symbol) {
                 token = _SCAN();
                 expr_relacional();
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
-                    if(!comando()){
-			errorMessage("esperado um comando");	
+		    if(isCommandFirst()){
+                        comando();
+                    } else {
+                        errorMessage("esperado um comando");
 		    }
                 } else {
                     errorMessage("esperado ')'");
@@ -325,9 +278,10 @@ boolean iteracao(){
             break;
         case DO:
             token = _SCAN();
-            executed = true;
-            if(!comando()){
-		errorMessage("esperado um comando");
+	    if(isCommandFirst()){
+                comando();
+            } else {
+                errorMessage("esperado um comando");
 	    }
             if (WHILE == token.symbol) {
                 token = _SCAN();
@@ -353,26 +307,29 @@ boolean iteracao(){
             }
             break;
     }
-    return executed;
 }
 
-boolean condicional(){
-    boolean executed = false;
+void condicional(){
     switch (token.symbol) {
         case IF:
             token = _SCAN();
-            executed = true;
             if (ABRE_PARENTESES == token.symbol) {
                 token = _SCAN();
                 expr_relacional();
                 if (FECHA_PARENTESES == token.symbol) {
                     token = _SCAN();
-                    if (!comando()){
-			errorMessage("esperado um comando");	
+		    if(isCommandFirst()){
+                        comando();
+                    } else {
+                        errorMessage("esperado um comando");
 		    }
                     if (ELSE == token.symbol) {
                         token = _SCAN();
-                        comando();
+		        if(isCommandFirst()){
+                            comando();
+                        } else {
+                             errorMessage("esperado um comando");
+		        }
                     }
                 } else {
                     errorMessage("esperado ')'");
@@ -382,19 +339,12 @@ boolean condicional(){
             }
             break;
     }
-    return false;
 }
 
-boolean comando(){
-    boolean executed = false;
-    executed = comando_basico();
-    if(!executed){
-        executed = iteracao();
-    }
-    if (!executed) {
-        executed = condicional();
-    }
-    return executed;
+void comando(){
+     comando_basico();
+     iteracao();
+     condicional();
 }
 
 
