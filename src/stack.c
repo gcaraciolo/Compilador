@@ -18,7 +18,7 @@ void stack_push(__STACK * stack, __TOKEN token, int type, int scope){
     _new->type      =   type;
     _new->scope     =   scope;
     _new->ant       =   stack->top;
-    stack->top     =   _new;
+    stack->top      =   _new;
     
 }
 
@@ -31,7 +31,7 @@ __TOKEN * stack_pop(__STACK * stack){
     }else{
         die             =   stack->top;
         token           =   die->token;
-        stack->top     =   die->ant;
+        stack->top      =   die->ant;
         free(die);
     }
     

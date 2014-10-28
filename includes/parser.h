@@ -12,21 +12,33 @@
 #include "globals.h"
 
 void parser();
-void programa();
-void bloco(boolean);
-void mult_variables(__STACK **, int);
-int getType();
+void programa ();
+void bloco();
+void mult_variables(__STACK ** , int );
 void decl_var(__STACK ** );
-void expressao();
 void atribuicao();
 void comando_basico();
-boolean isExpressaoRelacional();
-boolean isCommandFirst();
 void expr_relacional();
-void termo();
-void fator();
+__TOKEN expressao();
+__TOKEN expressao_linha();
+__TOKEN termo();
+__TOKEN termo_linha();
+__TOKEN fator();
 void iteracao();
 void condicional();
 void comando();
+boolean isExpressaoRelacional();
+boolean isCommandFirst();
+int getType();
+boolean isFirstDeclaration();
+boolean isExpressaoRelacional();
+boolean isCommandFirst();
+boolean isOparitimetico();
+boolean isFirstBlock();
+boolean isFirstAssing();
+boolean isFirstInteration();
+void checkSemantic(__TOKEN, __TOKEN );
+__TOKEN majorType(__TOKEN , __TOKEN );
+
 
 #endif
