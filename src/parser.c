@@ -70,7 +70,7 @@ void bloco() {
 		errorMessage("esperado '}'");
 	}
 
-	stack_free_scope(&symbols_table, scope);
+	stack_free_scope(&symbols_table);
 	scope--;
 
 }
@@ -79,8 +79,8 @@ void mult_variables(__STACK ** table, int type) {
 	char msg[MAX_CHARACTER + 100];
 
 	if (ID == token.symbol) {
-		if (!stack_consult_scope(*table, scope, token)) {
-			stack_push(*table, token, type, scope);
+		if (!stackVerifyExistsScope(*table, token)) {
+			stack_push(*table, token, type);
 		} else {
 			strcpy(msg, "multiplas definicoes para \'");
 			strcat(msg, token.lexema);
@@ -94,8 +94,8 @@ void mult_variables(__STACK ** table, int type) {
 			token = _SCAN();
 			while (true) {
 				if (ID == token.symbol) {
-					if (!stack_consult_scope(*table, scope, token)) {
-						stack_push(*table, token, type, scope);
+					if (!stackVerifyExistsScope(*table, token)) {
+						stack_push(*table, token, type);
 					} else {
 						strcpy(msg, "multiplas definicoes para \'");
 						strcat(msg, token.lexema);
@@ -139,9 +139,13 @@ void decl_var(__STACK ** table) {
 }
 
 void atribuicao() {
-	__TOKEN LValue, RValue;
-	if (ID == token.symbol) {
-		LValue = token = _SCAN();
+	__SEMANTIC LValue, RValue;
+	if (ID == token.symbol) {		
+		LValue = stackConsultAll(symbols_table, token);
+		if(NON_DECLARED == LValue.type){
+			errorMessage("variavel nao declarada");
+		}
+		token = _SCAN();
 		if (IGUAL_ATRIBUICAO == token.symbol) {
 			token = _SCAN();
 			RValue = expressao();
@@ -164,15 +168,15 @@ void comando_basico() {
 }
 
 void expr_relacional() {
-	__TOKEN type0, type1;
-	type0 = expressao();
+	__SEMANTIC left, right;
+	left = expressao();
 	if (isExpressaoRelacional()) {
 		token = _SCAN();
-		type1 = expressao();
+		right = expressao();
 	} else {
 		errorMessage("esperado uma expressao relacional");
 	}
-	//checkSemantic(type0, type1);
+	checkSemantic(left, right);
 }
 
 /**
@@ -180,21 +184,21 @@ void expr_relacional() {
  */
 __SEMANTIC expressao() {
 	__SEMANTIC semantic;
-	type = majorType(termo(), expressao_linha());
-	if (EMPTY == type.symbol) {
+	semantic = majorType(termo(), expressao_linha());
+	if (EMPTY == semantic.type) {
 		errorMessage("esperado uma expressao"); //program is aborted;
 	}
-	return type;
+	return semantic;
 }
 
 __SEMANTIC expressao_linha() {
-	__TOKEN empty;
+	__SEMANTIC semantic;
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
 		token = _SCAN();
 		return majorType(termo(), expressao_linha());
 	}
-	empty.symbol = EMPTY;
-	return empty;
+	semantic.type = EMPTY;
+	return semantic;
 }
 
 __SEMANTIC termo() {
@@ -202,13 +206,13 @@ __SEMANTIC termo() {
 }
 
 __SEMANTIC termo_linha() {
-	__TOKEN empty;
+	__SEMANTIC semantic;
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		token = _SCAN();
 		return majorType(fator(), termo_linha());
 	}
-	empty.symbol = EMPTY;
-	return empty;
+	semantic.type = EMPTY;
+	return semantic;
 }
 
 /**
@@ -467,7 +471,7 @@ void checkSemantic(__SEMANTIC type0, __SEMANTIC type1) {
 }
 
 __SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {
-	__SEMANTIC type;
+	__SEMANTIC semantic;
     /*
 	if (type0.symbol == type1.symbol) {
 		type = type0;
@@ -486,6 +490,6 @@ __SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {
 			errorMessage("tipos incompativeis");
 		}
 	}*/
-	return type;
+	return semantic;
 }
 

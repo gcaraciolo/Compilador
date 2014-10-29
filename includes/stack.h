@@ -16,7 +16,7 @@ __TOKEN * stack_alloc_token(__TOKEN );
 __TOKEN * stack_consult_top(__STACK * );
 boolean stackVerifyExistsScope(__STACK * , __TOKEN );
 boolean stackVerifyExistsAll(__STACK * , __TOKEN );
-__SEMANTIC * stackConsultCurrentScope(__STACK * , __TOKEN );
-__SEMANTIC * stackConsultAll(__STACK * , __TOKEN );
+__SEMANTIC stackConsultCurrentScope(__STACK * , __TOKEN );
+__SEMANTIC stackConsultAll(__STACK * , __TOKEN );
 
 #endif

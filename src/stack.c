@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stack.h"
+#include "symbols.h"
 
 __STACK * stack_create() {
 	__STACK * stack = (__STACK *) malloc(sizeof(__STACK ));

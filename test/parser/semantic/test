@@ -1,19 +1,27 @@
 int main(){
+	//multiplas definicoes na mesma linha
+	//int a,a;
 	int idade, cont;
 	char casa;
 	float pi;
-
+	
+	// variavel nao declarada
+	//ola = 10;
+	
 	idade = 5;
 	cont = 1;
 	casa = 'a';
 	pi = 0.5;
 
+	// tipo incompativel de atribuicao
+
 	do{
 		int idade, cont;
 		char casa;
 		float pi, pa;
-		char casa;
-
+		//multipla definicao para tipo diferente, em linha diferente
+		//char casa;
+				
 		idade = 10;
 		cont = 2;
 		casa = 'b';
@@ -22,16 +30,18 @@ int main(){
 		pa = 1.0;
 		
 		
-		while(a < b){
+		while(cont < idade){
 			int idade, cont;
 			char casa;
 			
 			idade = 15;
 			cont = 3;
 			casa = 'c';	
+			if (idade < cont)
+				idade = 10;
 		}
 
-	}while(a < b);
+	}while(idade > cont);
 
 
 }
