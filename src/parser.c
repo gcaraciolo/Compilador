@@ -149,6 +149,7 @@ void atribuicao() {
 		if (IGUAL_ATRIBUICAO == token.symbol) {
 			token = _SCAN();
 			RValue = expressao();
+			checkSemantic(LValue, RValue);
 			if (PONTO_VIRGULA == token.symbol) {
 				token = _SCAN();
 			} else {
@@ -156,7 +157,6 @@ void atribuicao() {
 			}
 		}
 	}
-	checkSemantic(LValue, RValue);
 }
 
 void comando_basico() {
@@ -176,7 +176,6 @@ void expr_relacional() {
 	} else {
 		errorMessage("esperado uma expressao relacional");
 	}
-	checkSemantic(left, right);
 }
 
 /**
@@ -186,7 +185,7 @@ __SEMANTIC expressao() {
 	__SEMANTIC semantic;
 	semantic = majorType(termo(), expressao_linha());
 	if (EMPTY == semantic.type) {
-		errorMessage("esperado uma expressao"); //program is aborted;
+		errorMessage("esperado uma expressao");
 	}
 	return semantic;
 }
@@ -356,11 +355,11 @@ void comando() {
 int getType() {
 	switch (token.symbol) {
 	case INT:
-		return INT;
+		return DIGITO;
 	case FLOAT:
-		return FLOAT;
+		return DIGITO_FLUTUANTE;
 	case CHAR:
-		return CHAR;
+		return LETRA;
 	}
 	return UNKNOW_TYPE;
 }
@@ -454,20 +453,20 @@ boolean isFirstConditional() {
     return false;
 }
 
-void checkSemantic(__SEMANTIC type0, __SEMANTIC type1) {
-	boolean ok = false;
-    /*
-	if (DIGITO_FLUTUANTE == type0.symbol && DIGITO == type1.symbol) {
+void checkSemantic(__SEMANTIC LValue, __SEMANTIC RValue) {
+	boolean ok = true;
+    
+	if (DIGITO_FLUTUANTE == LValue.type && DIGITO == RValue.type) {
 		ok = true;
-	} else if (DIGITO == type0.symbol && DIGITO_FLUTUANTE == type1.symbol) {
+	} else if (DIGITO == LValue.type && DIGITO_FLUTUANTE == RValue.type) {
 		ok = false;
-	}else if (type0.symbol != type1.symbol) {
+	}else if (RValue.type != LValue.type) {
 		ok = false;
 	}
 
 	if(!ok){
 		errorMessage("tipos incompativeis");
-	}*/
+	}
 }
 
 __SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {

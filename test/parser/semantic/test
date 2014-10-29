@@ -7,14 +7,18 @@ int main(){
 	
 	// variavel nao declarada
 	//ola = 10;
+
+	// tipo incompativel de atribuicao
+//	pi = 'b';
 	
-	idade = 5;
+	idade = 3;
 	cont = 1;
 	casa = 'a';
 	pi = 0.5;
-
-	// tipo incompativel de atribuicao
-
+	
+	if (pi < casa)
+		idade = 4;
+	pi = idade + cont;
 	do{
 		int idade, cont;
 		char casa;
