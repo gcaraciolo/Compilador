@@ -25,15 +25,6 @@ typedef struct __LIST __LIST;
 typedef struct __STACK __STACK;
 
 
-struct __TOKEN{
-    char lexema[MAX_CHARACTER];
-    int symbol;
-};
-
-struct __SEMANTIC{
-    char expr[MAX_CHARACTER];
-    int type;
-};
 
 struct __LIST {
     struct __LIST * ant;
@@ -45,6 +36,17 @@ struct __LIST {
 struct __STACK {
     __LIST * top;
 };
+
+struct __TOKEN{
+    char lexema[MAX_CHARACTER];
+    int symbol;
+};
+
+struct __SEMANTIC{
+    char expr[MAX_CHARACTER];
+    int type;
+};
+
 
 
 int linha, coluna;

@@ -87,7 +87,6 @@ void mult_variables(__STACK ** table, int type) {
 			strcat(msg, "\'");
 			errorMessage(msg);
 		}
-
 		token = _SCAN();
 		if (PONTO_VIRGULA == token.symbol) {
 			token = _SCAN();
@@ -95,7 +94,14 @@ void mult_variables(__STACK ** table, int type) {
 			token = _SCAN();
 			while (true) {
 				if (ID == token.symbol) {
-					stack_push(*table, token, type, scope);
+					if (!stack_consult_scope(*table, scope, token)) {
+						stack_push(*table, token, type, scope);
+					} else {
+						strcpy(msg, "multiplas definicoes para \'");
+						strcat(msg, token.lexema);
+						strcat(msg, "\'");
+						errorMessage(msg);
+					}
 					token = _SCAN();
 					if (VIRGULA == token.symbol) {
 						token = _SCAN();
@@ -166,14 +172,14 @@ void expr_relacional() {
 	} else {
 		errorMessage("esperado uma expressao relacional");
 	}
-	checkSemantic(type0, type1);
+	//checkSemantic(type0, type1);
 }
 
 /**
  * expressao nao pode ser vazia.
  */
-__TOKEN expressao() {
-	__TOKEN type;
+__SEMANTIC expressao() {
+	__SEMANTIC semantic;
 	type = majorType(termo(), expressao_linha());
 	if (EMPTY == type.symbol) {
 		errorMessage("esperado uma expressao"); //program is aborted;
@@ -181,7 +187,7 @@ __TOKEN expressao() {
 	return type;
 }
 
-__TOKEN expressao_linha() {
+__SEMANTIC expressao_linha() {
 	__TOKEN empty;
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
 		token = _SCAN();
@@ -191,11 +197,11 @@ __TOKEN expressao_linha() {
 	return empty;
 }
 
-__TOKEN termo() {
+__SEMANTIC termo() {
 	return majorType(fator(), termo_linha());
 }
 
-__TOKEN termo_linha() {
+__SEMANTIC termo_linha() {
 	__TOKEN empty;
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		token = _SCAN();
@@ -208,18 +214,32 @@ __TOKEN termo_linha() {
 /**
  * @return token com a informação do tipo.
  */
-__TOKEN fator() {
-	__TOKEN type;
+__SEMANTIC fator() {
+	__SEMANTIC semantic;
 	switch (token.symbol) {
 	case ID:
+		// need to verify if id exists in symbols table and get its type
+		semantic = stackConsultAll(symbols_table, token);
+		if(NON_DECLARED == semantic.type){
+			errorMessage("variavel nao declarada");
+		}
+		token = _SCAN();
+		break;
 	case DIGITO:
+		semantic.type = DIGITO;
+		token = _SCAN();
+		break;
 	case DIGITO_FLUTUANTE:
+		semantic.type = DIGITO_FLUTUANTE;
+		token = _SCAN();
+		break;
 	case LETRA:
-		type = token = _SCAN();
+		semantic.type = LETRA;
+		token = _SCAN();
 		break;
 	case ABRE_PARENTESES:
 		token = _SCAN();
-		type = expressao();
+		semantic = expressao();
 		if (FECHA_PARENTESES == token.symbol) {
 			token = _SCAN();
 		} else {
@@ -230,7 +250,7 @@ __TOKEN fator() {
 		errorMessage("esperado um identificador");
 		break;
 	}
-	return type;
+	return semantic;
 }
 
 void iteracao() {

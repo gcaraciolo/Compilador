@@ -9,6 +9,7 @@
 #ifndef SYMBOLS_H_
 #define SYMBOLS_H_
 
+#define NON_DECLARED					-2
 #define UNKNOW_TYPE                    -1
 #define EMPTY							 0
 
