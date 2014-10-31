@@ -192,11 +192,11 @@ __SEMANTIC expressao() {
 
 __SEMANTIC expressao_linha() {
 	__SEMANTIC semantic;
+    semantic.type = EMPTY;
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
 		token = _SCAN();
-		return majorType(termo(), expressao_linha());
+		semantic = majorType(termo(), expressao_linha());
 	}
-	semantic.type = EMPTY;
 	return semantic;
 }
 
@@ -206,11 +206,11 @@ __SEMANTIC termo() {
 
 __SEMANTIC termo_linha() {
 	__SEMANTIC semantic;
+    semantic.type = EMPTY;
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		token = _SCAN();
-		return majorType(fator(), termo_linha());
+		semantic =  majorType(fator(), termo_linha());
 	}
-	semantic.type = EMPTY;
 	return semantic;
 }
 
@@ -471,24 +471,21 @@ void checkSemantic(__SEMANTIC LValue, __SEMANTIC RValue) {
 
 __SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {
 	__SEMANTIC semantic;
-    /*
-	if (type0.symbol == type1.symbol) {
-		type = type0;
-	} else if (EMPTY == type0.symbol && EMPTY == type1.symbol) {
-		type = type0;
-	} else if (EMPTY == type0.symbol) {
-		type = type1;
-	} else if (EMPTY == type1.symbol) {
-		type = type0;
-	} else {
-		if (DIGITO_FLUTUANTE == type0.symbol && DIGITO == type1.symbol) {
-			type = type0;
-		} else if (DIGITO_FLUTUANTE == type1.symbol && DIGITO == type0.symbol) {
-			type = type1;
-		} else if (LETRA == type0.symbol && LETRA != type1.symbol) {
-			errorMessage("tipos incompativeis");
-		}
-	}*/
+    
+    if (type0.type == type1.type) {
+        semantic.type = type0.type;
+    } else if (EMPTY == type0.type && EMPTY == type1.type) {
+        semantic.type = EMPTY;
+    } else if (EMPTY == type0.type) {
+        semantic = type1;
+    } else if (EMPTY == type1.type) {
+        semantic = type0;
+    } else if ((DIGITO == type0.type && DIGITO_FLUTUANTE == type1.type)
+               || (DIGITO_FLUTUANTE == type0.type && DIGITO == type1.type)) {
+        semantic.type = DIGITO_FLUTUANTE;
+    } else {
+        errorMessage("tipos incompativeis");
+    }
 	return semantic;
 }
 

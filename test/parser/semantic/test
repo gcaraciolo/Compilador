@@ -9,10 +9,10 @@ int main(){
 	//ola = 10;
 
 	// tipo incompativel de atribuicao
-//	pi = 'b';
+	pi = 'b';
 	
-	idade = 3;
-	cont = 1;
+	idade = (3 + 4) - (3 * idade + cont)/(8 * ('a' - 10));
+	cont = idade + 4;
 	casa = 'a';
 	pi = 0.5;
 	
