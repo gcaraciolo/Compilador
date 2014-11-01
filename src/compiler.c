@@ -6,13 +6,13 @@
 int main(int argc, char *argv[]){
     int statusFile;
 	
-    
+    /*
 	if(argc < 2){
 		printf ("Parameters not passed.\n");
 		return ERROR_PARAMETERS_NOT_PASSED;
-	}
+	}*/
     
-   // argv[1] = "/Users/gcaraciolo/Documents/Compilador/test/parser/semantic/test";
+    argv[1] = "/Users/gcaraciolo/Documents/Compilador/test/parser/semantic/test";
     
 	statusFile = openFile(argv[1]);
 	if(ERROR_COULD_NOT_OPEN_FILE == statusFile){

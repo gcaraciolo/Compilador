@@ -5,18 +5,18 @@
 
 
 
-__STACK * stack_create();
-void stack_push(__STACK * , __TOKEN , int);
-__TOKEN * stack_pop(__STACK * );
-boolean stack_isEmpty(__STACK * );
-void stack_node_free(__TOKEN ** );
-void stack_free(__STACK ** );
-void stack_free_scope(__STACK ** stack );
-__TOKEN * stack_alloc_token(__TOKEN );
-__TOKEN * stack_consult_top(__STACK * );
+__STACK * stackCreate();
+void stackPush(__STACK * , __TOKEN , int);
+__TOKEN * stackPop(__STACK * );
+boolean stackIsEmpty(__STACK * );
+void stackFreeNode(__TOKEN ** );
+void stackFree(__STACK ** );
+void stackFreeScope(__STACK ** stack );
+__TOKEN * stackAllocToken(__TOKEN );
+__TOKEN * stackConsultTop(__STACK * );
 boolean stackVerifyExistsScope(__STACK * , __TOKEN );
 boolean stackVerifyExistsAll(__STACK * , __TOKEN );
-__SEMANTIC stackConsultCurrentScope(__STACK * , __TOKEN );
-__SEMANTIC stackConsultAll(__STACK * , __TOKEN );
+__TYPE_EXPRESSION stackConsultCurrentScope(__STACK * , __TOKEN );
+__TYPE_EXPRESSION stackConsultAll(__STACK * , __TOKEN );
 
 #endif

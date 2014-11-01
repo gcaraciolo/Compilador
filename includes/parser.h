@@ -19,11 +19,11 @@ void decl_var(__STACK ** );
 void atribuicao();
 void comando_basico();
 void expr_relacional();
-__SEMANTIC expressao();
-__SEMANTIC expressao_linha();
-__SEMANTIC termo();
-__SEMANTIC termo_linha();
-__SEMANTIC fator();
+__TYPE_EXPRESSION expressao();
+__TYPE_EXPRESSION expressao_linha();
+__TYPE_EXPRESSION termo();
+__TYPE_EXPRESSION termo_linha();
+__TYPE_EXPRESSION fator();
 void iteracao();
 void condicional();
 void comando();
@@ -38,8 +38,8 @@ boolean isFirstBlock();
 boolean isFirstAssing();
 boolean isFirstInteration();
 boolean isFirstConditional();
-void checkSemantic(__SEMANTIC, __SEMANTIC );
-__SEMANTIC majorType(__SEMANTIC , __SEMANTIC );
+void checkSemantic(__TYPE_EXPRESSION, __TYPE_EXPRESSION );
+__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION , __TYPE_EXPRESSION );
 
 
 #endif

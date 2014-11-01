@@ -40,9 +40,9 @@ void programa() {
 		errorMessage("esperado ')'");
 	}
 
-	symbols_table = stack_create();
+	symbols_table = stackCreate();
 	bloco();
-	stack_free(&symbols_table);
+	stackFree(&symbols_table);
 
 	if (END_OF_FILE != token.symbol) {
 		errorMessage("programa so deve conter a funcao main");
@@ -70,7 +70,7 @@ void bloco() {
 		errorMessage("esperado '}'");
 	}
 
-	stack_free_scope(&symbols_table);
+	stackFreeScope(&symbols_table);
 	scope--;
 
 }
@@ -80,7 +80,7 @@ void mult_variables(__STACK ** table, int type) {
 
 	if (ID == token.symbol) {
 		if (!stackVerifyExistsScope(*table, token)) {
-			stack_push(*table, token, type);
+			stackPush(*table, token, type);
 		} else {
 			strcpy(msg, "multiplas definicoes para \'");
 			strcat(msg, token.lexema);
@@ -95,7 +95,7 @@ void mult_variables(__STACK ** table, int type) {
 			while (true) {
 				if (ID == token.symbol) {
 					if (!stackVerifyExistsScope(*table, token)) {
-						stack_push(*table, token, type);
+						stackPush(*table, token, type);
 					} else {
 						strcpy(msg, "multiplas definicoes para \'");
 						strcat(msg, token.lexema);
@@ -139,7 +139,7 @@ void decl_var(__STACK ** table) {
 }
 
 void atribuicao() {
-	__SEMANTIC LValue, RValue;
+	__TYPE_EXPRESSION LValue, RValue;
 	if (ID == token.symbol) {		
 		LValue = stackConsultAll(symbols_table, token);
 		if(NON_DECLARED == LValue.type){
@@ -168,7 +168,7 @@ void comando_basico() {
 }
 
 void expr_relacional() {
-	__SEMANTIC left, right;
+	__TYPE_EXPRESSION left, right;
 	left = expressao();
 	if (isExpressaoRelacional()) {
 		token = _SCAN();
@@ -181,68 +181,72 @@ void expr_relacional() {
 /**
  * expressao nao pode ser vazia.
  */
-__SEMANTIC expressao() {
-	__SEMANTIC semantic;
-	semantic = majorType(termo(), expressao_linha());
-	if (EMPTY == semantic.type) {
+__TYPE_EXPRESSION expressao() {
+	__TYPE_EXPRESSION type_termo, type_expressao_linha, type_expression;
+    
+    type_termo = termo();
+    type_expressao_linha = expressao_linha();
+	type_expression = majorType(type_termo, type_expressao_linha);
+    
+	if (EMPTY == type_expression.type) {
 		errorMessage("esperado uma expressao");
 	}
-	return semantic;
+	return type_expression;
 }
 
-__SEMANTIC expressao_linha() {
-	__SEMANTIC semantic;
-    semantic.type = EMPTY;
+__TYPE_EXPRESSION expressao_linha() {
+	__TYPE_EXPRESSION type_expression;
+    type_expression.type = EMPTY;
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
 		token = _SCAN();
-		semantic = majorType(termo(), expressao_linha());
+		type_expression = majorType(termo(), expressao_linha());
 	}
-	return semantic;
+	return type_expression;
 }
 
-__SEMANTIC termo() {
+__TYPE_EXPRESSION termo() {
 	return majorType(fator(), termo_linha());
 }
 
-__SEMANTIC termo_linha() {
-	__SEMANTIC semantic;
-    semantic.type = EMPTY;
+__TYPE_EXPRESSION termo_linha() {
+	__TYPE_EXPRESSION type_expression;
+    type_expression.type = EMPTY;
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		token = _SCAN();
-		semantic =  majorType(fator(), termo_linha());
+		type_expression =  majorType(fator(), termo_linha());
 	}
-	return semantic;
+	return type_expression;
 }
 
 /**
  * @return token com a informação do tipo.
  */
-__SEMANTIC fator() {
-	__SEMANTIC semantic;
+__TYPE_EXPRESSION fator() {
+	__TYPE_EXPRESSION type_expression;
 	switch (token.symbol) {
 	case ID:
-		// need to verify if id exists in symbols table and get its type
-		semantic = stackConsultAll(symbols_table, token);
-		if(NON_DECLARED == semantic.type){
+		// need to verify if id exists in symbols table and get the type of it
+		type_expression = stackConsultAll(symbols_table, token);
+		if(NON_DECLARED == type_expression.type){
 			errorMessage("variavel nao declarada");
 		}
 		token = _SCAN();
 		break;
 	case DIGITO:
-		semantic.type = DIGITO;
+		type_expression.type = DIGITO;
 		token = _SCAN();
 		break;
 	case DIGITO_FLUTUANTE:
-		semantic.type = DIGITO_FLUTUANTE;
+		type_expression.type = DIGITO_FLUTUANTE;
 		token = _SCAN();
 		break;
 	case LETRA:
-		semantic.type = LETRA;
+		type_expression.type = LETRA;
 		token = _SCAN();
 		break;
 	case ABRE_PARENTESES:
 		token = _SCAN();
-		semantic = expressao();
+		type_expression = expressao();
 		if (FECHA_PARENTESES == token.symbol) {
 			token = _SCAN();
 		} else {
@@ -253,7 +257,7 @@ __SEMANTIC fator() {
 		errorMessage("esperado um identificador");
 		break;
 	}
-	return semantic;
+	return type_expression;
 }
 
 void iteracao() {
@@ -453,7 +457,7 @@ boolean isFirstConditional() {
     return false;
 }
 
-void checkSemantic(__SEMANTIC LValue, __SEMANTIC RValue) {
+void checkSemantic(__TYPE_EXPRESSION LValue, __TYPE_EXPRESSION RValue) {
 	boolean ok = true;
     
 	if (DIGITO_FLUTUANTE == LValue.type && DIGITO == RValue.type) {
@@ -469,23 +473,23 @@ void checkSemantic(__SEMANTIC LValue, __SEMANTIC RValue) {
 	}
 }
 
-__SEMANTIC majorType(__SEMANTIC type0, __SEMANTIC type1) {
-	__SEMANTIC semantic;
+__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
+	__TYPE_EXPRESSION type_expression;
     
     if (type0.type == type1.type) {
-        semantic.type = type0.type;
+        type_expression.type = type0.type;
     } else if (EMPTY == type0.type && EMPTY == type1.type) {
-        semantic.type = EMPTY;
+        type_expression.type = EMPTY;
     } else if (EMPTY == type0.type) {
-        semantic = type1;
+        type_expression = type1;
     } else if (EMPTY == type1.type) {
-        semantic = type0;
+        type_expression = type0;
     } else if ((DIGITO == type0.type && DIGITO_FLUTUANTE == type1.type)
                || (DIGITO_FLUTUANTE == type0.type && DIGITO == type1.type)) {
-        semantic.type = DIGITO_FLUTUANTE;
+        type_expression.type = DIGITO_FLUTUANTE;
     } else {
         errorMessage("tipos incompativeis");
     }
-	return semantic;
+	return type_expression;
 }
 

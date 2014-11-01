@@ -20,7 +20,7 @@ FILE *file;
 #define MAX_CHARACTER 257
 
 typedef struct __TOKEN __TOKEN;
-typedef struct __SEMANTIC __SEMANTIC;
+typedef struct __TYPE_EXPRESSION __TYPE_EXPRESSION;
 typedef struct __LIST __LIST;
 typedef struct __STACK __STACK;
 
@@ -42,7 +42,7 @@ struct __TOKEN{
     int symbol;
 };
 
-struct __SEMANTIC{
+struct __TYPE_EXPRESSION{
     char expr[MAX_CHARACTER];
     int type;
 };

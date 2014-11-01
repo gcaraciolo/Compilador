@@ -9,9 +9,14 @@ int main(){
 	//ola = 10;
 
 	// tipo incompativel de atribuicao
-	pi = 'b';
-	
-	idade = (3 + 4) - (3 * idade + cont)/(8 * ('a' - 10));
+	//pi = 'b';
+	//pi = casa;
+        //pi = idade;
+        //idade = pi; 
+	//idade = ('a'  + 3);
+ 
+        pi = 1 * 1 + 2;	
+	idade = (3 + 4) - (3 * idade + cont)/(8 * (5 - 10));
 	cont = idade + 4;
 	casa = 'a';
 	pi = 0.5;
@@ -26,7 +31,7 @@ int main(){
 		//multipla definicao para tipo diferente, em linha diferente
 		//char casa;
 				
-		idade = 10;
+		idade = 11;
 		cont = 2;
 		casa = 'b';
 
