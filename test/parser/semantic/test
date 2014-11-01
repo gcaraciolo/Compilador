@@ -21,7 +21,11 @@ int main(){
 	casa = 'a';
 	pi = 0.5;
 	
-	if (pi < casa)
+	//comparacao tipos incompativeis
+	//if (casa < pi)
+	//	idade = 4;
+	
+	if (casa < casa)
 		idade = 4;
 	pi = idade + cont;
 	do{

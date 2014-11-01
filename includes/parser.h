@@ -14,11 +14,11 @@
 void parser();
 void programa ();
 void bloco();
-void mult_variables(__STACK ** , int );
+void multVariables(__STACK ** , int );
 void decl_var(__STACK ** );
 void atribuicao();
 void comando_basico();
-void expr_relacional();
+void exprRelacional();
 __TYPE_EXPRESSION expressao();
 __TYPE_EXPRESSION expressao_linha();
 __TYPE_EXPRESSION termo();

@@ -75,7 +75,7 @@ void bloco() {
 
 }
 
-void mult_variables(__STACK ** table, int type) {
+void multVariables(__STACK ** table, int type) {
 	char msg[MAX_CHARACTER + 100];
 
 	if (ID == token.symbol) {
@@ -131,7 +131,7 @@ void decl_var(__STACK ** table) {
 
 		if (UNKNOW_TYPE != type) {
 			token = _SCAN();
-			mult_variables(table, type);
+			multVariables(table, type);
 		}
 
 	} while (UNKNOW_TYPE != type);
@@ -167,7 +167,7 @@ void comando_basico() {
 	}
 }
 
-void expr_relacional() {
+void exprRelacional() {
 	__TYPE_EXPRESSION left, right;
 	left = expressao();
 	if (isExpressaoRelacional()) {
@@ -176,6 +176,8 @@ void expr_relacional() {
 	} else {
 		errorMessage("esperado uma expressao relacional");
 	}
+    
+    majorType(left, right);    
 }
 
 /**
@@ -266,7 +268,7 @@ void iteracao() {
 		token = _SCAN();
 		if (ABRE_PARENTESES == token.symbol) {
 			token = _SCAN();
-			expr_relacional();
+			exprRelacional();
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
 				if (isFirstCommand()) {
@@ -292,7 +294,7 @@ void iteracao() {
 			token = _SCAN();
 			if (ABRE_PARENTESES == token.symbol) {
 				token = _SCAN();
-				expr_relacional();
+				exprRelacional();
 				if (FECHA_PARENTESES == token.symbol) {
 					token = _SCAN();
 					if (PONTO_VIRGULA == token.symbol) {
@@ -320,7 +322,7 @@ void condicional() {
 		token = _SCAN();
 		if (ABRE_PARENTESES == token.symbol) {
 			token = _SCAN();
-			expr_relacional();
+			exprRelacional();
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
 				if (isFirstCommand()) {
