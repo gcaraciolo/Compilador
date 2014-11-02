@@ -6,14 +6,26 @@ int main(){
 	//a = (1 * 2 + 3 * 4 * 5 + 10 - 4 / 2 + 9);
 	//b = a;
 	//a = a / b * (c / d) + e;
-		
+	/*	
 	if (a > b + x){
  		x = x + 1;
 		if (a < b)
 			a = 2;
 	}
-	else
+	else if( a < b)
  		x = x - 1;
+	
+
+	do{
+		a = 2;
+	}while(a < b + x);
+	*/
+	
+	while(a + 2 < b){
+		a = 2;
+		a = a + 2;
+	}
+
 
 }
 

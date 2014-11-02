@@ -390,16 +390,31 @@ __TYPE_EXPRESSION fator() {
 }
 
 void iteracao() {
+    char labelDoWhile[100], labelWhile[100], labelFimWhile[100];
+    labelDoWhile[0] = '\0';
+    labelWhile[0] = '\0';
+    labelFimWhile[0] = '\0';
+    
 	switch (token.symbol) {
 	case WHILE:
+        newLabel();
+        strcat(labelWhile, label);
+        printf("%s:\n", labelWhile);
 		token = _SCAN();
 		if (ABRE_PARENTESES == token.symbol) {
 			token = _SCAN();
 			exprRelacional();
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
+
+                newLabel();
+                strcat(labelFimWhile, label);
+                printf("if %s == 0 goto %s\n", varTemp, label);
+                
 				if (isFirstCommand()) {
 					comando();
+                    printf("goto %s\n", labelWhile);
+                    printf("%s:\n", labelFimWhile);
 				} else {
 					errorMessage("esperado um comando");
 				}
@@ -411,6 +426,9 @@ void iteracao() {
 		}
 		break;
 	case DO:
+        newLabel();
+        strcat(labelDoWhile, label);
+        printf("%s:\n",labelDoWhile);
 		token = _SCAN();
 		if (isFirstCommand()) {
 			comando();
@@ -422,6 +440,9 @@ void iteracao() {
 			if (ABRE_PARENTESES == token.symbol) {
 				token = _SCAN();
 				exprRelacional();
+                
+                printf("if %s != 0 goto %s\n",varTemp, labelDoWhile);
+                
 				if (FECHA_PARENTESES == token.symbol) {
 					token = _SCAN();
 					if (PONTO_VIRGULA == token.symbol) {
