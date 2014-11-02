@@ -9,6 +9,8 @@
 #include "stack.h"
 
 void parser() {
+    label = 0;
+    varTemp = 0;
 	token = _SCAN();
 	scope = -1;
 	programa();
@@ -140,16 +142,25 @@ void decl_var(__STACK ** table) {
 
 void atribuicao() {
 	__TYPE_EXPRESSION LValue, RValue;
+    char instrucao[MAX_CHARACTER];
+    
 	if (ID == token.symbol) {		
 		LValue = stackConsultAll(symbols_table, token);
 		if(NON_DECLARED == LValue.type){
 			errorMessage("variavel nao declarada");
 		}
+        strcat(instrucao, token.lexema);
+        strcat(instrucao, " ");
+        strcat(instrucao, "= ");
 		token = _SCAN();
+        
 		if (IGUAL_ATRIBUICAO == token.symbol) {
 			token = _SCAN();
 			RValue = expressao();
 			checkSemantic(LValue, RValue);
+            
+          //  writeCodeIntermindate(RValue);
+            
 			if (PONTO_VIRGULA == token.symbol) {
 				token = _SCAN();
 			} else {
@@ -157,6 +168,7 @@ void atribuicao() {
 			}
 		}
 	}
+    //printf("%s\n", instrucao);
 }
 
 void comando_basico() {
@@ -193,30 +205,62 @@ __TYPE_EXPRESSION expressao() {
 	if (EMPTY == type_expression.type) {
 		errorMessage("esperado uma expressao");
 	}
+    
 	return type_expression;
 }
 
 __TYPE_EXPRESSION expressao_linha() {
-	__TYPE_EXPRESSION type_expression;
+	__TYPE_EXPRESSION type_expression, type_termo, type_expressao_linha;
+    
     type_expression.type = EMPTY;
+    type_expression.expr[0] = '\0';
+    
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
 		token = _SCAN();
-		type_expression = majorType(termo(), expressao_linha());
+        type_termo = termo();
+        type_expressao_linha = expressao_linha();
+		type_expression = majorType(type_termo, type_expressao_linha);
+        
+        /*writeCodeIntermindate(type_termo);
+        writeCodeIntermindate(type_expressao_linha);
+        
+        printf("\n");*/
 	}
+    
 	return type_expression;
 }
 
 __TYPE_EXPRESSION termo() {
-	return majorType(fator(), termo_linha());
+    __TYPE_EXPRESSION type_fator, type_termo_linha, type_expression;
+    
+    type_fator = fator();
+    type_termo_linha = termo_linha();
+    type_expression = majorType(type_fator, type_termo_linha);
+    
+    if (EMPTY == type_expression.type) {
+        errorMessage("esperado um identificador");
+    }
+    
+    writeCodeIntermindate(type_fator);
+    writeCodeIntermindate(type_termo_linha);
+    
+    return type_expression;
 }
 
 __TYPE_EXPRESSION termo_linha() {
-	__TYPE_EXPRESSION type_expression;
+	__TYPE_EXPRESSION type_expression, type_fator, type_termo_linha;
+    
     type_expression.type = EMPTY;
+    type_expression.expr[0] = '\0';
+    
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		token = _SCAN();
-		type_expression =  majorType(fator(), termo_linha());
+        type_fator = fator();
+        type_termo_linha = termo_linha();
+		type_expression =  majorType(type_fator, type_termo_linha);
+        
 	}
+    
 	return type_expression;
 }
 
@@ -225,6 +269,7 @@ __TYPE_EXPRESSION termo_linha() {
  */
 __TYPE_EXPRESSION fator() {
 	__TYPE_EXPRESSION type_expression;
+    type_expression.expr[0] = '\0';
 	switch (token.symbol) {
 	case ID:
 		// need to verify if id exists in symbols table and get the type of it
@@ -235,14 +280,17 @@ __TYPE_EXPRESSION fator() {
 		token = _SCAN();
 		break;
 	case DIGITO:
+        strcat(type_expression.expr, token.lexema);
 		type_expression.type = DIGITO;
 		token = _SCAN();
 		break;
 	case DIGITO_FLUTUANTE:
+        strcat(type_expression.expr, token.lexema);
 		type_expression.type = DIGITO_FLUTUANTE;
 		token = _SCAN();
 		break;
 	case LETRA:
+        strcat(type_expression.expr, token.lexema);
 		type_expression.type = LETRA;
 		token = _SCAN();
 		break;
@@ -482,6 +530,7 @@ __TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
         type_expression.type = type0.type;
     } else if (EMPTY == type0.type && EMPTY == type1.type) {
         type_expression.type = EMPTY;
+        type_expression.expr[0] = '\0';
     } else if (EMPTY == type0.type) {
         type_expression = type1;
     } else if (EMPTY == type1.type) {
@@ -494,4 +543,39 @@ __TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
     }
 	return type_expression;
 }
+
+
+void getTemp(){
+    printf("t%d ", varTemp);
+}
+
+void newTemp() {
+    printf("t%d ", varTemp++);
+}
+
+void getLabel(){
+    printf("L%d ", label);
+}
+
+void newLabel() {
+    printf("L%d:", label++);
+}
+
+void writeCodeIntermindate(__TYPE_EXPRESSION type_expression) {
+    if (EMPTY != type_expression.type) {
+        
+        printf("%s", type_expression.expr);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 

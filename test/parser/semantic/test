@@ -1,10 +1,17 @@
 int main(){
+	int a,b;
+	a = 10 * 5;
+
+}
+
+/*int main(){
 	//multiplas definicoes na mesma linha
 	//int a,a;
 	int idade, cont;
 	char casa;
 	float pi;
 	
+	casa = 'a' * 'a';	
 	// variavel nao declarada
 	//ola = 10;
 
@@ -57,4 +64,4 @@ int main(){
 	}while(idade > cont);
 
 
-}
+}*/

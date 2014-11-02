@@ -146,19 +146,20 @@ __TYPE_EXPRESSION stackConsultCurrentScope(__STACK * stack, __TOKEN token) {
  */
 __TYPE_EXPRESSION stackConsultAll(__STACK * stack, __TOKEN token) {
 	__LIST * value = stack->top;
-	__TYPE_EXPRESSION semantic;
-	semantic.type = NON_DECLARED;
+	__TYPE_EXPRESSION type_expression;
+	type_expression.type = NON_DECLARED;
 
 	while (value) {
 		if (token.symbol == value->token->symbol
 				&& strcmp(token.lexema, value->token->lexema) == 0) {
-			semantic.type = value->type;
+			type_expression.type = value->type;
+            strcpy(type_expression.expr, token.lexema);
 			break;
 		}
 		value = value->ant;
 	}
 
-	return semantic;
+	return type_expression;
 
 }
 

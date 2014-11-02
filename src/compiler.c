@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 		return ERROR_FILE_CLOSED_UNSECCESSFULLY;
 	}
     
-    printf("Build succeeded.\n");
+    printf("\nBuild succeeded.\n");
 
 	return 0;
 }

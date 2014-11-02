@@ -53,5 +53,10 @@ int linha, coluna;
 __TOKEN token;
 int scope; // scope of blocks
 __STACK * symbols_table;
+int label;
+int varTemp;
+
+
+
 
 #endif

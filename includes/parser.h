@@ -40,6 +40,11 @@ boolean isFirstInteration();
 boolean isFirstConditional();
 void checkSemantic(__TYPE_EXPRESSION, __TYPE_EXPRESSION );
 __TYPE_EXPRESSION majorType(__TYPE_EXPRESSION , __TYPE_EXPRESSION );
+void getTemp();
+void newTemp();
+void getLabel();
+void newLabel();
+void writeCodeIntermindate(__TYPE_EXPRESSION );
 
 
 #endif
