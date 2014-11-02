@@ -9,7 +9,7 @@
 #include "stack.h"
 
 void parser() {
-    labelCont = 0;
+    labelCont = 1;
     varTempCont = 0;
 	token = _SCAN();
 	scope = -1;
@@ -143,6 +143,7 @@ void decl_var(__STACK ** table) {
 void atribuicao() {
 	__TYPE_EXPRESSION LValue, RValue;
     char instrucao[MAX_CHARACTER];
+    instrucao[0] = '\0';
     
 	if (ID == token.symbol) {		
 		LValue = stackConsultAll(symbols_table, token);
@@ -150,14 +151,14 @@ void atribuicao() {
 			errorMessage("variavel nao declarada");
 		}
         strcat(instrucao, token.lexema);
-        strcat(instrucao, " ");
-        strcat(instrucao, "= ");
+        strcat(instrucao, " = ");
 		token = _SCAN();
         
 		if (IGUAL_ATRIBUICAO == token.symbol) {
 			token = _SCAN();
 			RValue = expressao();
 			checkSemantic(LValue, RValue);
+            strcat(instrucao, RValue.expr);
             
           //  writeCodeIntermindate(RValue);
             
@@ -168,7 +169,7 @@ void atribuicao() {
 			}
 		}
 	}
-    //printf("%s\n", instrucao);
+    printf("%s\n", instrucao);
 }
 
 void comando_basico() {
@@ -180,16 +181,32 @@ void comando_basico() {
 }
 
 void exprRelacional() {
-	__TYPE_EXPRESSION left, right;
+	__TYPE_EXPRESSION type_expression, left, right;
+    char op[MAX_CHARACTER];
+    op[0] = '\0';
+
 	left = expressao();
 	if (isExpressaoRelacional()) {
+        strcat(op, token.lexema);
 		token = _SCAN();
 		right = expressao();
 	} else {
 		errorMessage("esperado uma expressao relacional");
 	}
+
+    type_expression = majorType(left, right);
+    strcpy(type_expression.expr, left.expr);
+    strcat(type_expression.expr, " ");
+    strcat(type_expression.expr, op);
+    strcat(type_expression.expr, " ");
+    strcat(type_expression.expr, right.expr);
+    arrayPush(type_expression.expr, " = ");
+    newTemp();
+    arrayPush(type_expression.expr, varTemp);
+    printf("%s\n", type_expression.expr);
     
-    majorType(left, right);    
+    
+    
 }
 
 /**
@@ -427,19 +444,39 @@ void iteracao() {
 }
 
 void condicional() {
+    char instruction[MAX_CHARACTER], labelIf[100], labelFimIf[100];
+    instruction[0] = '\0';
+    labelIf[0]= '\0';
+    labelFimIf[0] = '\0';
+    
 	switch (token.symbol) {
 	case IF:
+        strcat(instruction, token.lexema);
+        strcat(instruction, " ");
 		token = _SCAN();
 		if (ABRE_PARENTESES == token.symbol) {
 			token = _SCAN();
 			exprRelacional();
+            strcat(instruction, varTemp);
+            strcat(instruction, " == 0 goto ");
+            newLabel();
+            strcat(labelIf, label);
+            strcat(instruction, labelIf);
+            printf("%s\n",instruction);
+            
 			if (FECHA_PARENTESES == token.symbol) {
 				token = _SCAN();
 				if (isFirstCommand()) {
 					comando();
+                    
+                    newLabel();
+                    printf("goto %s\n",label);
+                    strcat(labelFimIf, label);
 				} else {
 					errorMessage("esperado um comando");
 				}
+                
+                printf("%s:\n", labelIf);
 				if (ELSE == token.symbol) {
 					token = _SCAN();
 					if (isFirstCommand()) {
@@ -456,6 +493,7 @@ void condicional() {
 		}
 		break;
 	}
+    printf("%s:\n",labelFimIf);
 }
 
 void comando() {
@@ -608,7 +646,7 @@ __TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
 
 void newTemp() {
     char tempAux[MAX_CHARACTER];
-    char number[3];
+    char number[100];
     sprintf(number, "%d", varTempCont);
     strcpy(tempAux, "t");
     strcat(tempAux, number);
@@ -621,7 +659,13 @@ void getLabel(){
 }
 
 void newLabel() {
-    printf("L%d:", labelCont++);
+    char tempAux[MAX_CHARACTER];
+    char number[100];
+    sprintf(number, "%d", labelCont);
+    strcpy(tempAux, "L");
+    strcat(tempAux, number);
+    strcpy(label, tempAux);
+    labelCont++;
 }
 
 void writeCodeIntermindate(__TYPE_EXPRESSION type_expression) {
