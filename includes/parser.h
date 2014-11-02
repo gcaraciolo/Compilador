@@ -45,6 +45,7 @@ void newTemp();
 void getLabel();
 void newLabel();
 void writeCodeIntermindate(__TYPE_EXPRESSION );
+void arrayPush(char * , const char * );
 
 
 #endif

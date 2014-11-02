@@ -9,8 +9,8 @@
 #include "stack.h"
 
 void parser() {
-    label = 0;
-    varTemp = 0;
+    labelCont = 0;
+    varTempCont = 0;
 	token = _SCAN();
 	scope = -1;
 	programa();
@@ -197,6 +197,8 @@ void exprRelacional() {
  */
 __TYPE_EXPRESSION expressao() {
 	__TYPE_EXPRESSION type_termo, type_expressao_linha, type_expression;
+    char instruct[MAX_CHARACTER];
+    instruct[0] = '\0';
     
     type_termo = termo();
     type_expressao_linha = expressao_linha();
@@ -205,26 +207,53 @@ __TYPE_EXPRESSION expressao() {
 	if (EMPTY == type_expression.type) {
 		errorMessage("esperado uma expressao");
 	}
+    if (EMPTY != type_expressao_linha.type) {
+        newTemp();
+        strcat(instruct, varTemp);
+        strcat(instruct, " = ");
+        strcat(instruct, type_termo.expr);
+        strcat(instruct, type_expressao_linha.expr);
+        printf("%s\n", instruct);
+        strcpy(type_expression.expr, varTemp);
+    }
     
 	return type_expression;
 }
 
 __TYPE_EXPRESSION expressao_linha() {
 	__TYPE_EXPRESSION type_expression, type_termo, type_expressao_linha;
+    char op[MAX_CHARACTER];
+    op[0] = '\0';
     
     type_expression.type = EMPTY;
     type_expression.expr[0] = '\0';
     
 	if (SOMA == token.symbol || SUBTRACAO == token.symbol) {
+        strcpy(op, token.lexema);
 		token = _SCAN();
         type_termo = termo();
         type_expressao_linha = expressao_linha();
 		type_expression = majorType(type_termo, type_expressao_linha);
         
-        /*writeCodeIntermindate(type_termo);
-        writeCodeIntermindate(type_expressao_linha);
-        
-        printf("\n");*/
+        if (EMPTY == type_expressao_linha.type) {
+            arrayPush(type_termo.expr, " ");
+            arrayPush(type_termo.expr, op);
+            arrayPush(type_termo.expr, " ");
+            type_expression = type_termo;
+        } else {
+            arrayPush(type_expressao_linha.expr, type_termo.expr);
+            type_expression = type_expressao_linha;
+            newTemp();
+            arrayPush(type_expression.expr, " = ");
+            arrayPush(type_expression.expr, varTemp);
+            writeCodeIntermindate(type_expression);
+            type_expression.expr[0] = ' ';
+            type_expression.expr[1] = '\0';
+            strcat(type_expression.expr, op);
+            strcat(type_expression.expr, " ");
+            strcat(type_expression.expr, varTemp);
+            
+        }
 	}
     
 	return type_expression;
@@ -232,6 +261,8 @@ __TYPE_EXPRESSION expressao_linha() {
 
 __TYPE_EXPRESSION termo() {
     __TYPE_EXPRESSION type_fator, type_termo_linha, type_expression;
+    char instruct[MAX_CHARACTER];
+    instruct[0] = '\0';
     
     type_fator = fator();
     type_termo_linha = termo_linha();
@@ -240,24 +271,55 @@ __TYPE_EXPRESSION termo() {
     if (EMPTY == type_expression.type) {
         errorMessage("esperado um identificador");
     }
+    if (EMPTY != type_termo_linha.type) {
+        newTemp();
+        strcat(instruct, varTemp);
+        strcat(instruct, " = ");
+        strcat(instruct, type_fator.expr);
+        strcat(instruct, type_termo_linha.expr);
+        printf("%s\n", instruct);
+        strcpy(type_expression.expr, varTemp);
+    }
     
-    writeCodeIntermindate(type_fator);
-    writeCodeIntermindate(type_termo_linha);
     
     return type_expression;
 }
 
 __TYPE_EXPRESSION termo_linha() {
 	__TYPE_EXPRESSION type_expression, type_fator, type_termo_linha;
+    char op[4];
+    op[0] = '\0';
     
     type_expression.type = EMPTY;
     type_expression.expr[0] = '\0';
     
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
+        strcpy(op, token.lexema);
 		token = _SCAN();
         type_fator = fator();
         type_termo_linha = termo_linha();
 		type_expression =  majorType(type_fator, type_termo_linha);
+        
+        if (EMPTY == type_termo_linha.type) {
+            arrayPush(type_fator.expr, " ");
+            arrayPush(type_fator.expr, op);
+            arrayPush(type_fator.expr, " ");
+            type_expression = type_fator;
+
+        } else {
+            arrayPush(type_termo_linha.expr, type_fator.expr);
+            type_expression = type_termo_linha;
+            newTemp();
+            arrayPush(type_expression.expr, " = ");
+            arrayPush(type_expression.expr, varTemp);
+            writeCodeIntermindate(type_expression);
+            type_expression.expr[0] = ' ';
+            type_expression.expr[1] = '\0';
+            strcat(type_expression.expr, op);
+            strcat(type_expression.expr, " ");
+            strcat(type_expression.expr, varTemp);
+
+        }
         
 	}
     
@@ -544,30 +606,38 @@ __TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
 	return type_expression;
 }
 
-
-void getTemp(){
-    printf("t%d ", varTemp);
-}
-
 void newTemp() {
-    printf("t%d ", varTemp++);
+    char tempAux[MAX_CHARACTER];
+    char number[3];
+    sprintf(number, "%d", varTempCont);
+    strcpy(tempAux, "t");
+    strcat(tempAux, number);
+    strcpy(varTemp, tempAux);
+    varTempCont++;
 }
 
 void getLabel(){
-    printf("L%d ", label);
+    printf("L%d ", labelCont);
 }
 
 void newLabel() {
-    printf("L%d:", label++);
+    printf("L%d:", labelCont++);
 }
 
 void writeCodeIntermindate(__TYPE_EXPRESSION type_expression) {
     if (EMPTY != type_expression.type) {
-        
-        printf("%s", type_expression.expr);
+        printf("%s\n", type_expression.expr);
     }
 }
 
+void arrayPush(char * array0, const char * array1) {
+    char new_array[MAX_CHARACTER];
+    new_array[0] = '\0';
+   
+    strcat(new_array, array1);
+    strcat(new_array, array0);
+    strcpy(array0, new_array);
+}
 
 
 
