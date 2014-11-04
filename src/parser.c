@@ -194,7 +194,7 @@ void exprRelacional() {
 		errorMessage("esperado uma expressao relacional");
 	}
 
-    type_expression = majorType(left, right);
+    type_expression = majorType(left, right, EMPTY);
     strcpy(type_expression.expr, left.expr);
     strcat(type_expression.expr, " ");
     strcat(type_expression.expr, op);
@@ -219,7 +219,7 @@ __TYPE_EXPRESSION expressao() {
     
     type_termo = termo();
     type_expressao_linha = expressao_linha();
-	type_expression = majorType(type_termo, type_expressao_linha);
+	type_expression = majorType(type_termo, type_expressao_linha, EMPTY);
     
 	if (EMPTY == type_expression.type) {
 		errorMessage("esperado uma expressao");
@@ -250,7 +250,7 @@ __TYPE_EXPRESSION expressao_linha() {
 		token = _SCAN();
         type_termo = termo();
         type_expressao_linha = expressao_linha();
-		type_expression = majorType(type_termo, type_expressao_linha);
+		type_expression = majorType(type_termo, type_expressao_linha, EMPTY);
         
         if (EMPTY == type_expressao_linha.type) {
             arrayPush(type_termo.expr, " ");
@@ -279,11 +279,14 @@ __TYPE_EXPRESSION expressao_linha() {
 __TYPE_EXPRESSION termo() {
     __TYPE_EXPRESSION type_fator, type_termo_linha, type_expression;
     char instruct[MAX_CHARACTER];
+    int symbol_op = EMPTY;
+
     instruct[0] = '\0';
     
     type_fator = fator();
+    symbol_op = token.symbol;
     type_termo_linha = termo_linha();
-    type_expression = majorType(type_fator, type_termo_linha);
+    type_expression = majorType(type_fator, type_termo_linha, symbol_op);
     
     if (EMPTY == type_expression.type) {
         errorMessage("esperado um identificador");
@@ -304,18 +307,18 @@ __TYPE_EXPRESSION termo() {
 
 __TYPE_EXPRESSION termo_linha() {
 	__TYPE_EXPRESSION type_expression, type_fator, type_termo_linha;
-    char op[4];
-    op[0] = '\0';
+        char op[4];
+        op[0] = '\0';
     
-    type_expression.type = EMPTY;
-    type_expression.expr[0] = '\0';
+        type_expression.type = EMPTY;
+        type_expression.expr[0] = '\0';
     
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
         strcpy(op, token.lexema);
-		token = _SCAN();
+	token = _SCAN();
         type_fator = fator();
         type_termo_linha = termo_linha();
-		type_expression =  majorType(type_fator, type_termo_linha);
+		type_expression =  majorType(type_fator, type_termo_linha, EMPTY);
         
         if (EMPTY == type_termo_linha.type) {
             arrayPush(type_fator.expr, " ");
@@ -644,11 +647,15 @@ void checkSemantic(__TYPE_EXPRESSION LValue, __TYPE_EXPRESSION RValue) {
 	}
 }
 
-__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1) {
+__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1, int op) {
 	__TYPE_EXPRESSION type_expression;
-    
+	
     if (type0.type == type1.type) {
-        type_expression.type = type0.type;
+        if (DIVISAO == op && DIGITO == type0.type && DIGITO == type1.type) {
+		type_expression.type = DIGITO_FLUTUANTE;
+	} else {
+	        type_expression.type = type0.type;
+	}
     } else if (EMPTY == type0.type && EMPTY == type1.type) {
         type_expression.type = EMPTY;
         type_expression.expr[0] = '\0';
