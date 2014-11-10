@@ -150,17 +150,22 @@ void atribuicao() {
 		if(NON_DECLARED == LValue.type){
 			errorMessage("variavel nao declarada");
 		}
-        strcat(instrucao, token.lexema);
-        strcat(instrucao, " = ");
+	        strcat(instrucao, token.lexema);
+		//strcat(instrucao, " = ");
 		token = _SCAN();
         
 		if (IGUAL_ATRIBUICAO == token.symbol) {
+        		strcat(instrucao, " = ");
 			token = _SCAN();
 			RValue = expressao();
 			checkSemantic(LValue, RValue);
-            strcat(instrucao, RValue.expr);
-            
-          //  writeCodeIntermindate(RValue);
+			if (DIGITO_FLUTUANTE == LValue.type && DIGITO == RValue.type){
+				newTemp();	
+				printf ("%s = (float)%s\n",varTemp, RValue.expr);
+				strcat(instrucao, varTemp);
+			} else {
+			        strcat(instrucao, RValue.expr);
+            		}
             
 			if (PONTO_VIRGULA == token.symbol) {
 				token = _SCAN();
