@@ -1,4 +1,4 @@
-#include <stdio.h>
+	#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -199,7 +199,7 @@ void exprRelacional() {
 		errorMessage("esperado uma expressao relacional");
 	}
 
-    type_expression = majorType(left, right, EMPTY);
+    type_expression = majorType(&left, &right, EMPTY);
     strcpy(type_expression.expr, left.expr);
     strcat(type_expression.expr, " ");
     strcat(type_expression.expr, op);
@@ -224,7 +224,7 @@ __TYPE_EXPRESSION expressao() {
     
     type_termo = termo();
     type_expressao_linha = expressao_linha();
-	type_expression = majorType(type_termo, type_expressao_linha, EMPTY);
+	type_expression = majorType(&type_termo, &type_expressao_linha, EMPTY);
     
 	if (EMPTY == type_expression.type) {
 		errorMessage("esperado uma expressao");
@@ -255,7 +255,7 @@ __TYPE_EXPRESSION expressao_linha() {
 		token = _SCAN();
         type_termo = termo();
         type_expressao_linha = expressao_linha();
-		type_expression = majorType(type_termo, type_expressao_linha, EMPTY);
+		type_expression = majorType(&type_termo, &type_expressao_linha, EMPTY);
         
         if (EMPTY == type_expressao_linha.type) {
             arrayPush(type_termo.expr, " ");
@@ -291,7 +291,7 @@ __TYPE_EXPRESSION termo() {
     type_fator = fator();
     symbol_op = token.symbol;
     type_termo_linha = termo_linha();
-    type_expression = majorType(type_fator, type_termo_linha, symbol_op);
+    type_expression = majorType(&type_fator, &type_termo_linha, symbol_op);
     
     if (EMPTY == type_expression.type) {
         errorMessage("esperado um identificador");
@@ -323,7 +323,7 @@ __TYPE_EXPRESSION termo_linha() {
 	token = _SCAN();
         type_fator = fator();
         type_termo_linha = termo_linha();
-		type_expression =  majorType(type_fator, type_termo_linha, EMPTY);
+		type_expression =  majorType(&type_fator, &type_termo_linha, EMPTY);
         
         if (EMPTY == type_termo_linha.type) {
             arrayPush(type_fator.expr, " ");
@@ -652,24 +652,40 @@ void checkSemantic(__TYPE_EXPRESSION LValue, __TYPE_EXPRESSION RValue) {
 	}
 }
 
-__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION type0, __TYPE_EXPRESSION type1, int op) {
+__TYPE_EXPRESSION majorType(__TYPE_EXPRESSION * type0, __TYPE_EXPRESSION * type1, int op) {
 	__TYPE_EXPRESSION type_expression;
-	
-    if (type0.type == type1.type) {
-        if (DIVISAO == op && DIGITO == type0.type && DIGITO == type1.type) {
+	char auxVar[MAX_CHARACTER];
+	auxVar[0] = '\0';
+
+    if (type0->type == type1->type) {
+        if (DIVISAO == op && DIGITO == type0->type && DIGITO == type1->type) {
 		type_expression.type = DIGITO_FLUTUANTE;
 	} else {
-	        type_expression.type = type0.type;
+	        type_expression.type = type0->type;
 	}
-    } else if (EMPTY == type0.type && EMPTY == type1.type) {
+    } else if (EMPTY == type0->type && EMPTY == type1->type) {
         type_expression.type = EMPTY;
         type_expression.expr[0] = '\0';
-    } else if (EMPTY == type0.type) {
-        type_expression = type1;
-    } else if (EMPTY == type1.type) {
-        type_expression = type0;
-    } else if ((DIGITO == type0.type && DIGITO_FLUTUANTE == type1.type)
-               || (DIGITO_FLUTUANTE == type0.type && DIGITO == type1.type)) {
+    } else if (EMPTY == type0->type) {
+        type_expression = *type1;
+    } else if (EMPTY == type1->type) {
+        type_expression = *type0;
+    } else if (DIGITO == type0->type && DIGITO_FLUTUANTE == type1->type) {
+	newTemp();
+	printf ("%s = (float)%s\n", varTemp, type0->expr);
+	strcpy(type0->expr, varTemp);
+        type_expression.type = DIGITO_FLUTUANTE;
+    } else if (DIGITO_FLUTUANTE == type0->type && DIGITO == type1->type) {
+	newTemp();
+	printf ("caso1->>> %s\n", type1->expr);
+	strcpy(auxVar, type1->expr);
+	auxVar[1] = ' ';
+	printf ("var ->> %s\n", auxVar);
+	eliminateWhiteSpace(auxVar);
+	printf ("aloo ->> %s\n", auxVar);
+	printf ("%s = (float)%s\n", varTemp, auxVar);
+	type1->expr[3] = '\0'; //apaga antiga variavel
+	strcat(type1->expr, varTemp);
         type_expression.type = DIGITO_FLUTUANTE;
     } else {
         errorMessage("tipos incompativeis");
@@ -716,7 +732,29 @@ void arrayPush(char * array0, const char * array1) {
     strcpy(array0, new_array);
 }
 
-
+void eliminateWhiteSpace(char *str){
+	int tam = strlen(str);
+	char strAux[MAX_CHARACTER];
+	int i, j;
+	strAux[0] = '\0';
+	printf ("eli ->> %s\n", str);
+	
+	for(i = 0; i < tam; i++){
+		printf ("%c", str[i]);
+		switch(str[i]){
+			case SPACE:
+				break;	
+			default:
+				printf ("colando\n");
+				strAux[j++] = str[i];
+				break;
+			
+		}	
+	}
+	strAux[j] = '\0';
+	printf ("\nahah ->> %s\n", strAux);
+	strcpy(str, strAux);
+}
 
 
 

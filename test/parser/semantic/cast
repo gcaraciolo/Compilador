@@ -1,7 +1,16 @@
 int main(){
 	float f;
-	int i;
+	int i, a, b, c;
 
-	f = 1;
+//	f = a + f;
+//	f = i;
+	f = ((1.5 + a) / b - f) * c;
+
+
+	if ( f < i ) {
+		f = 1.5 / 3;
+
+	}
+
 
 }
