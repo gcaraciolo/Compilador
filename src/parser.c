@@ -310,6 +310,7 @@ __TYPE_EXPRESSION termo() {
 __TYPE_EXPRESSION termo_linha() {
 	__TYPE_EXPRESSION type_expression, type_fator, type_termo_linha;
 	char op[4];
+	int symbol_op = EMPTY;
 	op[0] = '\0';
 
 	type_expression.type = EMPTY;
@@ -317,10 +318,12 @@ __TYPE_EXPRESSION termo_linha() {
 
 	if (MULTIPLICACAO == token.symbol || DIVISAO == token.symbol) {
 		strcpy(op, token.lexema);
+		symbol_op = token.symbol;
 		token = _SCAN();
 		type_fator = fator();
 		type_termo_linha = termo_linha();
-		type_expression = majorType(&type_fator, &type_termo_linha, EMPTY);
+		type_expression = majorType(&type_fator, &type_termo_linha, symbol_op);
+
 
 		if (EMPTY == type_termo_linha.type) {
 			arrayPush(type_fator.expr, " ");
